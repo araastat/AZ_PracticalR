@@ -24,3 +24,6 @@ slides/lectures/data/*
 slides/lectures/img/*
 slides/**/*cache/*
 slides/**/Makefile
+slides/**/*.html
+slides/**/*_files/*
+slides/lectures/data

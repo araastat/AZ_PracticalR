@@ -29,7 +29,7 @@ class: middle,center,inverse
 
 ## Plan
 
-```{r, echo=F}
+```{r, results='asis', echo=F, message=F, warning=F}
 library(lubridate)
 library(gt)
 start_date = as_date('2021-01-25')
