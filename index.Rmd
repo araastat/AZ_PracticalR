@@ -18,12 +18,12 @@ fa <- rmarkdown::html_dependency_font_awesome()
 htmltools::tagList(fa)
 ```
 
-This is a six-week training program and tutorial in R delivered through the Data Science Academy at AstraZeneca. It will comprise a 2-hour teaching session including labs and examples on Mondays, and a 
+This is a six-week training program and tutorial in R. It will comprise a 2-hour teaching session including labs and examples on Mondays, and a 
 follow-up office hours to go through exercises and labs on Friday. 
 
 ### Contact info: 
 
-- Abhijit Dasgupta: via Microsoft Teams, e-mail at abhijit.dasgupta@astrazeneca.com
+- Abhijit Dasgupta: via Microsoft Teams
 
 
 -------
