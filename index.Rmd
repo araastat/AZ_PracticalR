@@ -1,0 +1,61 @@
+---
+title: "Practical R"
+author: "Abhijit Dasgupta"
+date: "January-March, 2021"
+output: 
+  html_document:
+    includes:
+      after_body: footer.html
+    theme: cosmo
+    highlight: textmate
+
+---
+
+```{r, include = FALSE}
+# Enables Font Awesome in HTML based bookdown outputs.
+fa <- rmarkdown::html_dependency_font_awesome()
+# fa$attachment <- "fonts/fontawesome-webfont.ttf"
+htmltools::tagList(fa)
+```
+
+This is a six-week training program and tutorial in R delivered through the Data Science Academy at AstraZeneca. It will comprise a 2-hour teaching session including labs and examples on Mondays, and a 
+follow-up office hours to go through exercises and labs on Friday. 
+
+### Contact info: 
+
+- Abhijit Dasgupta: via Microsoft Teams, e-mail at abhijit.dasgupta@astrazeneca.com
+
+
+-------
+
+<a href="http://www.r-project.org" target="_blank">R</a> is one of the most popular programming languages for 
+data science and statistics. It is a free and open source language available for 
+all major operating systems. It is extensible through a packaging system that has resulted
+in over 12,000 user-contributed packages available on [CRAN](http://cran.r-project.org). 
+
+In this course we will provide a practical approach to learning R using examples, with
+the intention to get you using R for your data analyses, data visualization and reporting 
+as quickly as possible. We will try to avoid the more esoteric and "computer science-y" aspects
+of this programming language. We hope this approach and personal practice enables 
+you to get started using R for your own work, find resources you may need beyond this
+course to help you answer your particular questions, and develop workflows for your data
+analyses that allow you to generate tables and figures for research papers, for example. 
+
+The instructor uses R in his daily work for
+many, many years and has a pretty detailed knowledge of R's advantages, pitfalls, tricks 
+and shortcuts. Don't hesitate to reach out and ask your questions. 
+
+
+------
+
+```{r, fig.width=5, fig.height=4}
+library(ggplot2)
+data(iris)
+ggplot(iris, aes(Sepal.Width, Sepal.Length, color=Species))+geom_point()+
+  labs(x='Sepal Width', y = 'Sepal Length', color='Species')
+```
+
+-----
+
+<p style="font-size: 80%"> This website is written using R, <a href="http://rmarkdown.rstudio.com/index.html" target="_blank">R Markdown</a> and various packages provided by <a href="http://www.rstudio.com" target="_blank">RStudio</a>. 
+The source code is available on <a href="https://github.com/araastat/BIOF339/tree/gh-pages" target="_blank">GitHub</a> </p>

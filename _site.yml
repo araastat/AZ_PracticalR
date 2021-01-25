@@ -1,0 +1,27 @@
+name: Practical R
+output_dir: "docs"
+navbar:
+  title: "Practical R"
+  left:
+    - text: Home
+      href: index.html
+    - text: Instructor
+      href: bio.html
+    - text: Resources
+      href: resources.html
+  right:
+    # - text: Course Notes
+    #   href: notes/index.html
+    # - icon: fa-slack
+    #   text: Slack
+    #   href: https://biof339.slack.com
+    - icon: fa-github
+      text: GitHub
+      href: https://www.github.com/araastat/AZ_PracticalR
+
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    css: styles.css
+    code_download: no
