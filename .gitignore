@@ -8,3 +8,6 @@ img/*
 docs/renv/*
 docs/renv.lock
 _site1.yml
+
+docs/Makefile
+docs/make_subdirs

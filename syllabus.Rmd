@@ -1,0 +1,79 @@
+---
+title: "Course information"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+library(gt)
+start_date = as_date('2021-01-25')
+class_dates = start_date + (0:5)*days(7)
+
+```
+
+
+## Course description
+
+The goal of this course is to introduce R as an analysis platform and tool for data science rather than purely a programming language. Throughout the course, emphasis will be placed on example-driven learning. Topics to be covered include: installation of R and R packages; R commands; R data types; loading data in R; manipulating data; exploring data through visualization; descriptive and inferential statistics;  building models; generating publication-quality graphics; creating reports using R Markdown. No prior programming experience is required
+
+## Learning materials
+
+There are no prescribed texts for this course. However we will draw on material from several texts 
+and other materials described on the [Resources](resources.html) page, which are freely
+available on the Internet. 
+
+There are also several cheatsheets that can be used as resources, as well as online 
+material that we will use for practice
+
+### Course Goals
+
+When you complete the course successfully, you will be able to:
+
++ Run R and RStudio, making use of inherent R features
++ Find and make use of the extensive packages (R add-ons) available for analyzin
+g biological and other forms of data
++ Load, manipulate, and combine data to make it amenable to further analys
+es
++ Visualize data with extensive graphics capabilities of R (including ggpl
+ot)
++ Use R to run statistical models and hypothesis tests and report results
+conforming to standards expected in scientific journals
++ Write reports using the powerful rmarkdown package and its derivatives
+
+### Class outline
+
+```{r}
+outline <- tibble(Title = c(
+  "Introduction to R: Working environment and data structures",
+  "Using packages to enhance data ingestion, munging and reporting",
+  "Data visualization for exploration and reporting",
+  "Statistical analyses using R",
+  "Developing and evaluating models",
+  "Reproducible documents for analytic reporting"
+)) %>% 
+  mutate(`Time (EST)` = '9 - 11 am',
+         `Time (UTC)` = '2 - 4 pm',
+         Date = format(class_dates, '%d %b')) %>% 
+  select(Date, everything())
+
+gt(outline)
+```
+
+<p></p>
+### The Learning Process
+
+My philosophy is to get students up and running with R for data analysis as quickly as possible. As such, this course is opinionated, in that I make certain choices of what parts of R to teach to make things most accessible and useful.
+
+Students can be successful in this course through following the teaching materials, participating in discussions on Teams, and practice. R is a language in the same way that French or Japanese is a language (you’re just talking to a computer), and so the only way to retain the knowledge gained in this class is to use it. The exercises and tutorials are meant to get you used to using R for different purposes, so please do them diligently.
+
+### Communication
+
+This class will communicate primarily via Teams. We will contain topics for each
+week within the chat channel for that week. Common files will be posted in Teams,
+but this website will be the prime source of materials. If you have a question, please ask it in the Teams chat so that others can contribute to and learn from the discussion. During the week, I'll
+respond to questions and comments at the end of my day (around 4pm EST / 9pm UTC), so if
+you don't hear from me sooner, don't panic!!
+
+### Etiquette
+
+The most important thing is to be polite, considerate and empathetic in all communications and discussions. There are different levels of knowledge about R in this class, and so some questions may appear trivial to some but are essential for others. Be kind, and if you can help a classmate, do so with grace and civility. The class learns best if we all help and support each other.

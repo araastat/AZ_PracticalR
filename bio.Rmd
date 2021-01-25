@@ -6,7 +6,7 @@ output:
     highlight: textmate
 ---
 
-## [Abhijit Dasgupta, PhD](https://webbedfeet.netlify.com){target=_blank}
+### Abhijit Dasgupta, PhD
 
 Dr. Dasgupta is a biostatistician and data scientist with experience in
 statistical modeling and machine learning, bioinformatics, optimization, signal
