@@ -1,0 +1,83 @@
+---
+title: "Week 1 assignment"
+author: "Abhijit Dasgupta"
+date: "1/25/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reading
+
+1. Chapter 2 of Hands on Programming with R ([link](https://rstudio-education.github.io/hopr/basics.html))
+1. Parts of Chapters 1 and 2 of the R Cookbook ([link](https://rc2e.com/index.html#the-recipes)) that you find useful. I'd strongly suggest bookmarking section 2.14 ([link](https://rc2e.com/somebasics#recipe-id025))
+
+## Problem 1
+
+Complete the RStudio Primer on Programming Fundamentals available [here](https://rstudio.cloud/learn/primers/1.2)
+
+This primer covers most of what we've covered this week, and a little bit more
+
+## Problem 2
+
+Find the problems (typos) in the following code snippets and correct them so that they run without errors. This exercise will make you aware that the primary reason for R errors is typographical errors. R is case-sensitive and requires the exact specification for each object name. 
+
+
+```{r, eval=F}
+my_variable <- 1:5
+my_var1able
+```
+
+```{r, eval=F}
+data(airquality)
+mean(airquality$wind)
+```
+
+```{r, eval=F}
+table(iris$Sepal_Length)
+```
+
+## Problem 3
+
+Write a function that converts miles per gallon to kilometers per liter. The conversion
+is 1 mpg = 1.6/3.8 kmpl. The basic format for a function is 
+
+```{r, eval=F}
+name <- function(variables) {
+  
+}
+```
+
+Here, you would have one input variable _x_, and it will output one input variable _y_. You need to name your function (please don't keep it as _name_). 
+
+You can then apply this function to the fuel efficiency data in the **mtcars** dataset, which is `mtcars$mpg`. 
+
+## Problem 4
+
+Write a for-loop that generates the natural logarithms (`log`) of the first 20 integers (`1:20`). 
+
+```{r, eval=F}
+for(___ in 1:20){
+  print(___(____))
+}
+```
+
+## Problem 5
+
+The `Theoph` data set contains data from an experiment on the pharmacokinetics 
+of theophylline. I would like, for each of the 12 subjects in the data, to compute the 
+maximum theophylline concentration seen during the experiments.
+
+```{r, eval=F}
+data(Theoph)
+for(u in unique(Theoph$_____)){
+  print(max(Theoph$conc[Theoph$Subject == ____]))
+}
+```
+
+
+
+
+

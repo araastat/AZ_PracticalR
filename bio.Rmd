@@ -17,19 +17,17 @@ reports and presentations. He co-organized the [Statistical Programming
 DC](http://www.meetup.com/stats-prog-dc) meetup (formerly R Users Group DC) and
 served on the Board of [Data Community DC](http://www.datacommunitydc.org). He
 regularly gives workshops and webinars on using R and Python for data analysis,
-machine learning and visualization. He currently serves as co-chair of the
+machine learning and visualization. He continues his voluntary service as co-chair of the
 [Bioinformatics and Data Science](https://faes.org/content/bioinformatics-and-data-science){target=_blank} department at 
 [FAES/NIH](https://faes.org){target=_blank}.
 
-Dr. Dasgupta is currently Principal Data Scientist at AstraZeneca. 
+Dr. Dasgupta is currently Principal Data Scientist at AstraZeneca, where he works collaboratively across Oncology teams. 
 Previously, he served as a consultant to the [National Institute of Arthritis,
 Musculoskeletal and Skin
 Disorders](https://www.niams.nih.gov/about/directory/abhijit-dasgupta-phd){target=_blank},
-part of the NIH, where he works on complex analyses of healthcare databases as
+part of the NIH, where he worked on complex analyses of healthcare databases, bioinformatics, machine learning applications as
 well as outcomes research. He maintains his clinical trial chops 
-by serving as a reviewer on [NIHM](http://nimh.nih.gov) Data Safety Monitoring Boards,
-as well as on 
-[NIH SBIR](https://public.csr.nih.gov/StudySections/SmallBusinessAndTechnologyTransfer){target=_blank} review panels. 
+by serving as a reviewer on [NIHM](http://nimh.nih.gov) Data Safety Monitoring Boards.
 
 Dr. Dasgupta is a certified
 [Carpentries](http://www.carpentries.org){target=_blank} instructor, and, with
