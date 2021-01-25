@@ -1,0 +1,279 @@
+---
+class: middle,center,inverse
+
+# Functions
+
+---
+
+## Why do we need functions?
+
+When you are typing instructions to the computer, you might find yourself repeating the same instructions over and over. So you end up copying and pasting code for each repitition.
+
++ Can make a mistake copying and pasting
++ If you need to change the instructions, you need to find every instance of it **manually** and change it, and you're likely to miss one
+
+The rule of thumb is, if you're copying the same code more than twice, write a function.
+
++ Write the instructions once
++ Change it in only one place, if needed
+
+```{r, include=F}
+knitr::opts_chunk$set(echo=T)
+```
+
+---
+
+## Defining functions
+
+The basic syntax of a function is 
+
+```
+<function name> <- function(<input argument(s)>){
+  <code for instructions>
+  ...
+  <more code>
+  return(<output object>)
+}
+```
+
+---
+
+## Defining functions
+
+Let's create our own function to convert feet to inches.
+
+```{r}
+ft2in <- function(ft){
+  inch <- ft * 12
+  return(inch)
+}
+```
+
++ `ft2in` is the name of the function
++ The input argument is named `ft` (make an expressive name)
++ Inches are computed by multiplying `ft` by 12 and storing it in `inch`
++ The output of the function is the value of the `inch` variable
+
+To run this:
+
+.pull-left[
+```{r a1, eval = F, echo = T}
+ft2in(12) # 12 feet to inches
+```
+]
+.pull-right[
+```{r, eval=T, echo = F, ref.label="a1"}
+```
+]
+
+---
+
+## Defining functions
+
+What if we want more than one input?
+
+```{r, echo=T}
+ft2in <- function(ft, convert_to){
+  # ft = input (feet)
+  # convert_to = unit to convert to ('in','m','cm')
+  if(convert_to == 'in'){
+    output <- ft * 12
+  }
+  if(convert_to == 'm'){
+    output <- ft * 0.3048
+  }
+  if(convert_to == 'cm'){
+    output <- ft * 30.48
+  }
+  return(paste(output, convert_to))
+}
+```
+
+.pull-left[
+```{r f2, eval = F, echo = T}
+ft2in(12, convert_to='cm')
+```
+]
+.pull-right[
+```{r, eval=T, echo = F, ref.label="f2"}
+```
+]
+
+
+---
+
+## The concept of local vs global variables
+
+```{r}
+x <-  10
+print(x)
+
+f <- function(x){
+  x <- 5
+  print(x)
+}
+
+f(x)
+
+print(x)
+```
+
+The `x` inside the function is local to the function and is independent of the `x` in the global space that has the value 10..
+
+---
+class: middle,center,inverse
+
+# Checking conditions: if / ifelse
+
+---
+
+## Checking conditions
+
+We already saw an example of checking conditions with the `case_when` function.
+
+Generally, we want to check conditions in order to do different things when different conditions are met. 
+
+---
+
+## Checking conditions
+
+The general structure for this is the `if` statement:
+
+```{r, eval=F}
+if(condtion is met){
+  do these things
+} else{
+  do these things
+}
+```
+
+For example:
+
+```{r}
+letter <- 'b'
+
+if(letter %in% c('a','e','i','o','u')){
+  print('This is a vowel')
+} else {
+  print("This is a consonant")
+}
+
+```
+
+---
+
+## Checking conditions
+
+You can check multiple conditions at once
+
+```{r}
+x <- 10
+
+if(x %% 2 == 0 & (x %% 5 == 0)){
+  print('x is divisible by 10')
+} else if (x %% 2 == 0){
+  print('x is even')
+} else {
+  print('x is odd')
+}
+```
+
+---
+
+## Checking conditions
+
+One of R's advantages is that it can operate functions on arrays (vectors) of numbers. 
+Taking advantage of that, if you only need to check one of two conditions, you can use the function `ifelse`.
+
+```{r}
+x <- c(1,2,3,4,5,6,7,8,9,10)
+
+ifelse(x %% 2 == 0, 'even', 'odd')
+```
+
+---
+
+## Quick reminder about conditions
+
+Some comparison operators for filtering
+
+| Operator | Meaning                          |
+|----------|----------------------------------|
+| ==       | Equals                           |
+| !=       | Not equals                       |
+| > / <    | Greater / less than              |
+| >= / <=  | Greater or equal / Less or equal |
+| !        | Not                              |
+| %in%     | In a set                         |
+
+Combining comparisons
+
+| Operator   | Meaning |
+|------------|---------|
+| &          | And     |
+| &#124;       | Or      |
+
+
+
+---
+class: middle,center,inverse
+
+# Loops   
+
+---
+
+
+## for-loops
+
+![](https://media.giphy.com/media/3o6nURRboKQJrBGVC8/giphy.gif)
+
+---
+
+## for-loops
+
+The for-loop is a construct to repeat the same operation over a list of values.
+
+Basic syntax:
+
+```
+for(<variable> in <list>){
+    <code>
+    ...
+    <more code>
+}
+```
+
+Example:
+
+.pull-left[
+```{r loop1, eval = F, echo = T}
+for(i in 1:10){
+  print(i)
+}
+```
+
+Here `i` is a dummy variable. It's actual name doesn't matter, just its action
+]
+.pull-right[
+```{r, eval=T, echo = F, ref.label="loop1"}
+```
+]
+
+---
+
+## for-loops
+
+Example:
+
+```{r}
+for(n in names(iris)){
+  if(is.numeric(iris[,n])){
+    print(paste0('The mean of ', n, ' is ', mean(iris[,n]))) #<<
+  }
+}
+```
+
+You don't need the `<list>` in the for-loop definition to be integers. In this case it is a list of strings.
+
+Note that vectors are also considered lists for this purpose. 
+

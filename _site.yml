@@ -1,5 +1,5 @@
 name: Practical R
-output_dir: "docs"
+output_dir: "docs/toplevel"
 navbar:
   title: "Practical R"
   left:
@@ -9,14 +9,16 @@ navbar:
       href: bio.html
     - text: Course information
       href: syllabus.html
-    - text: Resources
-      href: resources.html
+    - text: Lectures
+      href: slides/index.html
   right:
     # - text: Course Notes
     #   href: notes/index.html
     # - icon: fa-slack
     #   text: Slack
     #   href: https://biof339.slack.com
+    - text: Resources
+      href: resources.html
     - icon: fa-github
       text: GitHub
       href: https://www.github.com/araastat/AZ_PracticalR

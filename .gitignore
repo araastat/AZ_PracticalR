@@ -11,3 +11,15 @@ _site1.yml
 
 docs/Makefile
 docs/make_subdirs
+docs/**/*.Rmd
+docs/**/*.yml
+docs/**/data/*
+docs/lib/*
+docs/**/*cache
+docs/slides_top/*
+docs/toplevel/*
+docs/slides/lectures/week*/img/*
+
+slides/lectures/data/*
+slides/lectures/img/*
+slides/**/*cache/*

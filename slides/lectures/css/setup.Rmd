@@ -1,0 +1,54 @@
+```{css}
+div.my-header {
+background-color: #272822;
+  position: absolute;
+top: 0px;
+left: 0px;
+height: 30px;
+width: 100%;
+text-align: left;
+}
+
+div.my-header span{
+  font-size: 14pt;
+  color: #F7F8FA;
+    position: absolute;
+  left: 15px;
+  bottom: 2px;
+}
+````
+
+```{r setup, include=FALSE, message=FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning=FALSE, 
+                      comment = "", cache = FALSE)
+library(pacman)
+p_load(char = c('tidyverse', 'here', 'janitor', 'fs', 
+                'readxl', 'flipbookr', 'broom', 'tableone',
+                'palmerpenguins', 'knitr', 'gt', 'kableExtra',
+                'fontawesome', 'countdown', 'xaringanExtra', 'xaringanthemer',
+                'pander','emo'))
+
+source(here('lib/R/update_header.R'))
+
+
+
+
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+# style_duo_accent(
+#   primary_color = "#830051",  #035AA6",
+#   secondary_color = "#03A696",
+style_mono_accent(
+  base_color = "#830051",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat"),
+  code_font_google   = google_font("Fira Mono"),
+  base_font_size = "20px"
+)
+xaringanExtra::use_tachyons()
+xaringanExtra::use_panelset()
+xaringanExtra::use_extra_styles(hover_code_line=TRUE, mute_unhighlighted_code = TRUE)
+```
+
