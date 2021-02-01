@@ -65,7 +65,8 @@ We will use the following files for examples in this section
 
 1. BreastCancer_Clinical.csv
 1. BreastCancer.xlsx
-1. sydneybeaches3.csv
+1. BreastCancer_Expression_full.csv
+1. weather.csv
 
 Take a couple of minutes and download these files into your RStudio Project
 
