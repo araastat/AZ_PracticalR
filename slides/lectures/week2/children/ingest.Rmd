@@ -10,15 +10,39 @@ class: middle, center, inverse
 
 Unlike Excel, you have to pull data into R for R to operate on it
 
-Typically your data is in some sort of file (Excel, csv, sas7bdat, dta, txt)
+Typically your data is in some sort of file (Excel, csv, sas7bdat, txt)
 
 You need to find a way to pull it into R
 
-The GUI you've used is one way, but not very programmatic
+The GUI you've used is one way, but not very programmatic. This is a problem for verification and reproducibility.
 
 ---
 
+## The `readr` package
+
+```{r, echo=F}
+d <- tribble(~Function, ~Reads,
+             'read_csv()', 'Comma separated values',
+             'read_csv2()', 'Semi-colon separated values',
+             'read_delim()', 'General delimited files',
+             'read_fwf()', 'Fixed width files',
+             'read_tsv()', 'Tab delimited values')
+knitr::kable(d) %>% 
+  kableExtra::kable_styling()
+```
+
+Compared to data ingestion functions in base R, these are
+
+1. around 10x faster
+1. returns _tibbles_ (enhanced data.frame)
+1. Have better defaults
+---
+
 ## Data ingestion
+
+The **readr** package is meant to ingest rectangular data.
+
+There are of course many other data formats that might need to be read. R provides functionality to read many of these.
 
 ```{r 03-DataIngestionMunging-8, echo=F}
 b <- tribble(
@@ -28,17 +52,35 @@ b <- tribble(
   "csv", "fread", "data.table", "Fastest",
   "Excel", "read_excel", "readxl",'',
   'sas7bdat','read_sas', 'haven','SAS format',
-  'sav', 'read_spss', 'haven','SPSS format',
-  'dta','read_dta', 'haven', 'Stata format'
+  'json', 'read_json', 'jsonlite', 'JSON format'
 )
-knitr::kable(b, format='html')
+knitr::kable(d, format='html')
 ```
 
 ---
 
-# Data ingestion
+## Example data sets
 
-We will use [this](../data/BreastCancer_Clinical.csv) csv data and [this](../data/BreastCancer.xlsx) Excel data for the following:
+We will use the following files for examples in this section
+
+1. BreastCancer_Clinical.csv
+1. BreastCancer.xlsx
+1. sydneybeaches3.csv
+
+Take a couple of minutes and download these files into your RStudio Project
+
+```{r, echo=F}
+countdown(minutes=3)
+```
+
+> Note where you store the data files within your project. Your path will not be the same as mine, since I probably have a different directory structure than you
+
+> You'll see a lot of `..` in my file paths. This means _go up one level_ in the hierarchy of file paths.
+---
+
+## Data ingestion
+
+
 
 ```{r 03-DataIngestionMunging-9, message=F}
 brca_clinical <- readr::read_csv('../../data/BreastCancer_Clinical.csv')
@@ -81,7 +123,6 @@ head(brca_clinical2)
 + A `tibble` works pretty much like any `data.frame`, but the printing is a little saner
 + A `data.table` is faster, has more inherent functionality, but has a very different syntax
 
-We'll work almost entirely with `tibble`'s and not `data.table`
 
 --
 
@@ -94,9 +135,16 @@ Suggested modifications:
 brca_clinical <- janitor::clean_names(brca_clinical)
 ```
 
----
-background-image: url(../img/janitor_clean_names.png)
-background-size: contain
+--
+
+We'll work almost entirely with `tibble`'s and not `data.table`. 
+
+However, if speed is a consideration for you, it might be worth learning to work with data.table objects. Some resources for this are:
+
+- [A gentle introduction to data.table](https://atrebas.github.io/post/2020-06-17-datatable-introduction/)
+- [data.table in R: The Complete Beginners Guide](https://www.machinelearningplus.com/data-manipulation/datatable-in-r-complete-guide/)
+- [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/datatable.pdf)
+
 
 ---
 
@@ -143,8 +191,7 @@ b <- tribble(
   "csv", "fwrite", "data.table", "Fastest",
   "Excel", "write.xlsx", "openxlsx",'',
   'sas7bdat','write_sas', 'haven','SAS format',
-  'sav', 'write_spss', 'haven','SPSS format',
-  'dta','write_dta', 'haven', 'Stata format'
+  'json','write_json', 'jsonlite','JSON format'
 )
 knitr::kable(b, format='html')
 ```
@@ -154,13 +201,9 @@ We'll often save tabular results using these functions
 .footnote[These can also be useful for exporting results, but the R Markdown related packages are better for that]
 
 ---
+class: middle,center,inverse
 
-layout: true
-
-<div class="my-header">
-<span>BIOF 339: Practical R</span></div>
-
-## Simplifying import/export
+# Simplifying Import/Export
 
 ---
 
@@ -173,7 +216,7 @@ The `rio` package uses the different packages mentioned earlier but unifies it i
 For example:
 
 ```{r, eval=F}
-rio::import('data/clinical_data_breast_cancer_modified.csv')
+rio::import('../../data/clinical_data_breast_cancer_modified.csv')
 ```
 
 --
@@ -186,23 +229,25 @@ rio::import('data/clinical_data_breast_cancer_modified.csv')
 
 You can also import multiple sheets from Excel, or multiple objects from .RData files, into a list of data frames
 
-```{r, echo=T, eval=F}
-dat <- rio::import_list('data/BreastCancer.xlsx')
-```
-```{r, echo=F, eval=T}
+```{r, echo=T, eval=T}
 dat <- rio::import_list('../../data/BreastCancer.xlsx')
 ```
+
+.pull-left[
 ```{r}
 class(dat)
 names(dat)
-map_chr(dat, class)
+
 ```
----
+]
+.pull-right[
+```{r}
+for(i in 1:length(dat)){
+  print(paste0('The object dat$',names(dat)[i],' is of class ', class(dat[[i]])))
+}
+```
 
-layout: true
-
-<div class="my-header">
-<span>BIOF 339: Practical R</span></div>
+]
 
 ---
 

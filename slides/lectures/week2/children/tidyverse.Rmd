@@ -61,7 +61,15 @@ glue_data(tidy_pkgs[5:8,],
 </font>
 
 ---
+background-image: url(../img/workflow1.png)
+background-size: contain
 
+.footnote[From [Mastering the tidyverse](https://github.com/rstudio-education/master-the-tidyverse) by Garrett Grolemund]
+---
+background-image: url(../img/workflow2.png)
+background-size: contain
+
+---
 ## The tidyverse
 
 ### Resources

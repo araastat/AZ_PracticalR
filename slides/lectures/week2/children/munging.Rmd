@@ -1,21 +1,3 @@
----
-title: "Practical R: Data Munging"
-author: Abhijit Dasgupta
-date: BIOF 339
-
----
-
-```{r setup, include=F, child = here::here('slides/templates/setup.Rmd')}
-```
-```{r setup1, include=FALSE}
-library(countdown)
-library(fontawesome)
-```
-
-layout: true
-
-<div class="my-header">
-<span>BIOF 339: Practical R</span></div>
 
 ---
 class: middle, center
@@ -154,7 +136,7 @@ library(tidyverse)
 
 <font size=5>
 .pull-left[
-```{r munging-2, echo = F, results = 'asis'}
+```{r, echo = F, results = 'asis'}
 library(tidyverse)
 library(glue)
 tidy_pkgs <- 

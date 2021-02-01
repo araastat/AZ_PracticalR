@@ -26,6 +26,10 @@ date: "1 February, 2021"
 
 ```{r, child="children/ingest.Rmd"}
 
+```
+
+```{r, child="children/munging.Rmd"}
+
 
 ```
 
