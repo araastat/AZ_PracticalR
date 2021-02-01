@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Practical R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Abhijit Dasgupta" />
+    <script src="00_packages_files/header-attrs-2.6/header-attrs.js"></script>
+    <link href="00_packages_files/tachyons-4.12.0/tachyons.min.css" rel="stylesheet" />
+    <link href="00_packages_files/panelset-0.2.3.9000/panelset.css" rel="stylesheet" />
+    <script src="00_packages_files/panelset-0.2.3.9000/panelset.js"></script>
+    <link href="00_packages_files/xaringanExtra-extra-styles-0.2.3.9000/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link href="00_packages_files/countdown-0.3.5/countdown.css" rel="stylesheet" />
+    <script src="00_packages_files/countdown-0.3.5/countdown.js"></script>
+    <script src="00_packages_files/kePrint-0.0.1/kePrint.js"></script>
+    <link href="00_packages_files/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="../css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../css/sfah.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Practical R
+### Abhijit Dasgupta
+### 1 February, 2021
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Why do we need functions?
+
+When you are typing instructions to the computer, you might find yourself repeating the same instructions (code) over and over. So you end up copying and pasting code for each repetition.
+
++ Can make a mistake copying and pasting
++ If you need to change the instructions, you need to find every instance of it **manually** and change it, and you're likely to miss one
+
+--
+
+The rule of thumb is, if you're copying the same code more than twice, write a function.
+
++ Write the instructions once (This is the [DRY principle](https://dzone.com/articles/software-design-principles-dry-and-kiss))
++ Change it in only one place, if needed
+
+
+
+---
+
+## An example
+
+.pull-left[
+In this code, we need to read data from 3 different studies, and store only
+the columns corresponding to the subject ID, the study arm, the years of followup and the vital status (dead/alive). 
+
+&gt; We're assuming that the column names are normalized, and we'll see how to do this later
+
+For each study data file, we are doing the following common operations:
+
+1. Read data from a CSV file
+1. Extract the columns we need, and save the extracted data for use
+1. Print that we've read the data
+1. Compute the number of observations in the data
+1. Print out the number of observations
+]
+.pull-right[
+
+```r
+# Reading multiple data files and processing them
+
+data1 &lt;- read.csv("study1.csv")
+data1_use &lt;- data1[,c("ID", "Arm", 
+                      "Years_of_followup", "Vital_status")]
+print("Read data")
+N &lt;- nrow(data1_use)
+print(paste("Number of observations =", N))
+
+data2 &lt;- read.csv("study2.csv")
+data2_use &lt;- data2[,c("ID", "Arm", 
+                      "Years_of_followup", "Vital_status")]
+print("Read data")
+N &lt;- nrow(data2_use)
+print(paste("Number of observations =", N))
+
+data3 &lt;- read.csv("study3.csv")
+data3_use &lt;- data3[,c("ID", "Arm", 
+                      "Years_of_followup", "Vital_status")]
+print("Read data")
+N &lt;- nrow(data3_use)
+print(paste("Number of observations =", N))
+```
+]
+
+---
+## Defining functions
+
+The basic syntax of a function is 
+
+```
+&lt;function name&gt; &lt;- function(&lt;input argument(s)&gt;){
+  &lt;code for instructions&gt;
+  ...
+  &lt;more code&gt;
+  return(&lt;optional output object&gt;)
+}
+```
+
+A function is a .heatinline[recipe] that takes some inputs (raw materials), 
+does something to them, and the (optionally) return a new object. We'll write some .saltinline[pseudocode] below:
+
+.pull-left[
+
+```r
+bake_bread &lt;- function(flour, yeast, water, salt, oven){
+  Mix flour, yeast, water and salt
+  Let dough rise 4 hours in warm place
+  Knead dough
+  Preheat oven to 450F with dutch oven inside
+  Put dough into dutch oven, cover
+  Bake 30 minutes
+  return(bread)
+}
+```
+]
+.pull-right[
+
+```r
+read_data &lt;- function(data_file){
+  read the data using read.csv
+  create new data.frame with specified colums
+  print message
+  compute number of observations in data.frame
+  print number of observations
+  return(data_for_use)
+}
+```
+]
+
+
+---
+
+## Writing the function
+
+.pull-left[
+
+.saltinline[Pseudocode]
+
+
+```r
+read_data &lt;- function(data_file){
+  read the data using read.csv
+  create new data.frame with specified colums
+  print message
+  compute number of observations in data.frame
+  print number of observations
+  return(data_for_use)
+}
+```
+]
+.pull-right[
+
+.heatinline[R code]
+
+
+```r
+read_data &lt;- function(data_file){
+  data &lt;- read.csv(data_file)
+  data_use &lt;- data[,c("ID","Arm","Years_of_followup", "Vital_status")]
+  print('Read data')
+  N &lt;- nrow(data_use)
+  print(paste('Number of observations =', N))
+  return(data_use)
+}
+```
+]
+
+Use this function: 
+
+
+```r
+data1_use &lt;- read_data('study1.csv')
+data2_use &lt;- read_data('study2.csv')
+data3_use &lt;- read_data('study3.csv')
+```
+
+---
+
+## The concept of local vs global variables
+
+This concept is central to how to think about functions and how they work. 
+
+Any object created within the function is **local** to the function, and does not affect the global environment (what's recorded in the Environment pane)
+
+&gt; However, you can call an object that's in the global environment from inside a function. This can create problems about the provenance of objects. So best practice is to **only use existing objects as explicit inputs to the function** rather than just calling them from inside the function.
+
+.pull-left[
+
+```r
+f &lt;- function(x){
+  x &lt;- 5
+  print(x)
+}
+```
+
+This behavior allows us to create objects in a function with the same name as 
+an object that might already exist, and not run into issues like over-writing or destroying objects
+]
+.pull-right[
+
+```r
+x &lt;-  10
+
+f(x)
+```
+
+```
+[1] 5
+```
+
+```r
+print(x)
+```
+
+```
+[1] 10
+```
+
+]
+
+---
+class: middle,center,inverse
+
+# Loops   
+
+---
+
+## for-loops
+
+The for-loop is a construct to repeat the same operation over a list of values.
+
+.pull-left[
+
+Basic syntax:
+
+```
+for(&lt;variable&gt; in &lt;list&gt;){
+    &lt;code&gt;
+    ...
+    &lt;more code&gt;
+}
+```
+
+We can use for-loops in conjunction with functions to read our study data sets
+]
+.pull-right[
+![](https://media.giphy.com/media/3o6nURRboKQJrBGVC8/giphy.gif)
+
+]
+
+---
+
+## for-loops
+
+When using loops to read or process multiple objects, it's strategically simpler
+to store the objects in a **list**
+
+
+```r
+study_files &lt;- c('study1.csv','study2.csv', 'study3.csv')
+data_use &lt;- list() # Initialize an empty list
+
+for(i in 1:length(study_files)){
+  data_use[[i]] &lt;- read_data(study_files[i]) # Note [[]] vs []
+}
+```
+
+--
+
+- Here I'm using an integer as the looping variable
+- You can also index the loop using the actual objects in the file list
+
+
+```r
+for(n in study_files){
+  data_use[[n]] &lt;- read_data(n)
+}
+```
+
+Let's see what the differences are in these approaches
+
+---
+
+## for-loops
+
+.pull-left[
+
+```r
+study_files &lt;- c('study1.csv','study2.csv','study3.csv')
+data_use &lt;- list()
+
+for(i in 1:length(study_files)){
+  data_use[[i]] &lt;- read_data(study_files[i])
+}
+```
+
+```r
+str(data_use)
+```
+
+```
+List of 3
+ $ :'data.frame':	10 obs. of  4 variables:
+  ..$ ID               : int [1:10] 1 2 3 4 5 6 7 8 9 10
+  ..$ Arm              : chr [1:10] "SOC" "Treatment" "Treatment" "SOC" ...
+  ..$ Years_of_followup: num [1:10] 12.5 14.6 10.6 15.8 10.2 9.6 11.2 8.4 10.3 12.8
+  ..$ Vital_status     : chr [1:10] "Alive" "Alive" "Alive" "Alive" ...
+ $ :'data.frame':	16 obs. of  4 variables:
+  ..$ ID               : int [1:16] 1 2 3 4 5 6 7 8 9 10 ...
+  ..$ Arm              : chr [1:16] "Treatment" "Treatment" "SOC" "SOC" ...
+  ..$ Years_of_followup: num [1:16] 15.6 10 10.9 14.5 11 17.3 11.6 13.1 13.4 14.4 ...
+  ..$ Vital_status     : chr [1:16] "Dead" "Alive" "Alive" "Alive" ...
+ $ :'data.frame':	27 obs. of  4 variables:
+  ..$ ID               : int [1:27] 1 2 3 4 5 6 7 8 9 10 ...
+  ..$ Arm              : chr [1:27] "SOC" "SOC" "Treatment" "SOC" ...
+  ..$ Years_of_followup: num [1:27] 11.1 11.9 15.6 14.1 11.1 11.8 13.9 9.6 11.6 11.4 ...
+  ..$ Vital_status     : chr [1:27] "Alive" "Alive" "Alive" "Alive" ...
+```
+
+]
+.pull-right[
+
+```r
+study_files &lt;- c('study1.csv','study2.csv','study3.csv')
+data_use2 &lt;- list()
+
+for(n in study_files){
+  data_use2[[n]] &lt;- read_data(n)
+}
+```
+
+```r
+str(data_use2)
+```
+
+```
+List of 3
+ $ study1.csv:'data.frame':	10 obs. of  4 variables:
+  ..$ ID               : int [1:10] 1 2 3 4 5 6 7 8 9 10
+  ..$ Arm              : chr [1:10] "SOC" "Treatment" "Treatment" "SOC" ...
+  ..$ Years_of_followup: num [1:10] 12.5 14.6 10.6 15.8 10.2 9.6 11.2 8.4 10.3 12.8
+  ..$ Vital_status     : chr [1:10] "Alive" "Alive" "Alive" "Alive" ...
+ $ study2.csv:'data.frame':	16 obs. of  4 variables:
+  ..$ ID               : int [1:16] 1 2 3 4 5 6 7 8 9 10 ...
+  ..$ Arm              : chr [1:16] "Treatment" "Treatment" "SOC" "SOC" ...
+  ..$ Years_of_followup: num [1:16] 15.6 10 10.9 14.5 11 17.3 11.6 13.1 13.4 14.4 ...
+  ..$ Vital_status     : chr [1:16] "Dead" "Alive" "Alive" "Alive" ...
+ $ study3.csv:'data.frame':	27 obs. of  4 variables:
+  ..$ ID               : int [1:27] 1 2 3 4 5 6 7 8 9 10 ...
+  ..$ Arm              : chr [1:27] "SOC" "SOC" "Treatment" "SOC" ...
+  ..$ Years_of_followup: num [1:27] 11.1 11.9 15.6 14.1 11.1 11.8 13.9 9.6 11.6 11.4 ...
+  ..$ Vital_status     : chr [1:27] "Alive" "Alive" "Alive" "Alive" ...
+```
+
+]
+---
+
+## for-loops
+
+.pull-left[
+
+```r
+head(data_use[[1]])
+```
+
+```
+  ID       Arm Years_of_followup Vital_status
+1  1       SOC              12.5        Alive
+2  2 Treatment              14.6        Alive
+3  3 Treatment              10.6        Alive
+4  4       SOC              15.8        Alive
+5  5       SOC              10.2        Alive
+6  6 Treatment               9.6         Dead
+```
+
+```r
+head(data_use[['study1.csv']])
+```
+
+```
+NULL
+```
+
+]
+.pull-right[
+
+```r
+head(data_use2[[1]])
+```
+
+```
+  ID       Arm Years_of_followup Vital_status
+1  1       SOC              12.5        Alive
+2  2 Treatment              14.6        Alive
+3  3 Treatment              10.6        Alive
+4  4       SOC              15.8        Alive
+5  5       SOC              10.2        Alive
+6  6 Treatment               9.6         Dead
+```
+
+```r
+head(data_use2[['study1.csv']])
+```
+
+```
+  ID       Arm Years_of_followup Vital_status
+1  1       SOC              12.5        Alive
+2  2 Treatment              14.6        Alive
+3  3 Treatment              10.6        Alive
+4  4       SOC              15.8        Alive
+5  5       SOC              10.2        Alive
+6  6 Treatment               9.6         Dead
+```
+
+]   
+
+---
+
+## for-loops
+
+The Teams Files area has three files `study1.csv`, `study2.csv`, and `study3.csv`
+
+1. Save these files into your RStudio Project in the top-level folder
+1. Load these files into R using a for-loop. Just load the files as-is without any data manipulation into a list in R
+
+
+
+```{=html}
+&lt;div class="countdown" id="timer_6018035d" style="right:0;bottom:0;" data-warnwhen="0"&gt;
+&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
+&lt;/div&gt;
+```
+
+  
+
+---
+
+
+
+
+
+
+class: middle,center,inverse
+
+# Packages in R
+
+---
+
+## Packages
+
+
+.center[.acid[If _functions_ are recipes, then&lt;br&gt; _packages_ are recipe books]]
+
+Packages are collections of functions, and sometimes data, that are usually unified for 
+a common purpose
+
+--
+
+If you want to cook from a recipe, you first have to grab the recipe book from your shelf
+
+--
+
+.heatinline[Similarly, if you want to use a function from a package, you first have to grab or activate
+the package in _your current R session_ ]
+
+This is done using the `library` function 
+
+For example, 
+
+
+```r
+library(tidyverse)
+library(janitor)
+```
+
+---
+
+## Packages
+
+There is another way to access functions from packages, if you're really only going to 
+use one function from it. 
+
+The general form for this is .heatinline[`&lt;package&gt;::&lt;function&gt;`] (note the __two__ colons)
+
+For example, if you just want to use the `clean_names` function from the **janitor** package, you can 
+do so by 
+
+
+```r
+janitor::clean_names(dataset)
+```
+
+where `dataset` is the name of the data.frame whose column names you want to clean.
+
+---
+
+## Important operational notes
+
+.pull-left[
+### .red[Install packages **once per computer**]
+
+&gt; Never install packages inside a R Markdown file
+]
+.pull-right[
+### .orange[Activate a package **once per R session**]
+
+]
+--
+
+
+.footnote[The **pacman** package and the `pacman::p_load` function saves you a bunch of trouble by 
+installing a package only if it doesn't exist on your computer and then activating the packaage. This one function removes a lot of the operational issues in installing and loading packages in R.]
+
+
+---
+class: middle,center,inverse
+
+# Where are the packages?
+
+---
+
+## CRAN
+
+CRAN is the Comprehensive R Archive Network, a network of mirrored repositories containing R packages.
+
+Today, it really doesn't matter which of the repositories you use. 
+
+In RStudio, the default repository is **Global (CDN) - RStudio** which is a version in the cloud that typically works the fastest. 
+
+![:scale 50%](../img/pkg1.png)
+
+
+---
+
+## CRAN
+
+You can install packages from CRAN using the following means:
+
+.pull-left[
+`install.packages("&lt;package name&gt;")`
+
+Or, if you want to be explicit, or are not using RStudio, 
+
+`install.packages("&lt;package name&gt;", repos = "&lt;repository URL&gt;")`
+
+]
+.pull-right[
+Using the RStudio _Packages_ panel
+
+(see next slide)
+]
+
+You can find packages for particular topics using CRAN [Task Views](https://cran.r-project.org/web/views/)
+
+---
+background-image: url(../img/pkg2.png)
+background-size: contain
+
+---
+
+## GitHub
+
+GitHub is where many R packages reside during development. 
+
+To install a package directly from GitHub, you need the **remotes** package, and 
+then you can use
+
+
+```r
+remotes::install_github("&lt;owner&gt;/&lt;repo&gt;")
+```
+
+For example, if you want to install the development version of **dplyr**:
+
+
+```r
+remotes::install_github("tidyverse/dplyr")
+```
+
+---
+
+## Bioconductor
+
+The [Bioconductor](https://www.bioconductor.org) is a R organization dedicated to 
+bioinformatics. It has its own repository of over 1900 packages
+
+To install Bioconductor packages, you first need to install the **BiocManager** package from CRAN (note the upper and lower case letters). Then you can install packages by 
+
+
+```r
+BiocManager::install('&lt;package name&gt;')
+```
+
+For example, if you want to install the **DESeq2** package that computes differential gene expressions: 
+
+
+```r
+BiocManager::install('DESeq2')
+```
+
+---
+## Installing packages, a summary
+
+
+.pull-left[
+### From CRAN
+
+```r
+install.packages("tidyverse")
+```
+
+### From Bioconductor
+
+```r
+install.packages("BiocManager") # do once 
+BiocManager::install('limma')
+```
+
+### From GitHub
+
+
+```r
+install.packages('remotes') # do once
+remotes::install_github("rstudio/rmarkdown") 
+# usual format is username/packagename
+```
+]
+.pull-right[
+&gt; GitHub often hosts development version of packages published on CRAN or Bioconductor
+
+&gt; Both CRAN and Bioconductor have stringent checks to make sure packages can run properly, with no obvious program flaws. There are typically no
+  guarantees about analytic or theoretical correctness, but most packages have been crowd-validated and there are several reliable developer groups
+  including RStudio
+  
+]
+
+---
+
+# Exercise
+
+1. Open RStudio and install the package "pacman". 
+1. Check if the "tidyverse" package is installed using functions from the "pacman" package. 
+    - First, activate the "pacman" package
+    - Then, then use the function `p_isinstalled` to see if the "tidyverse" package is already installed (you can use `?p_isinstalled` to see how to use the function)
+1. If the "tidyverse" package isn't installed, install it.
+    - Use either `install.packages` or `pacman::p_install` (can't use the latter until you complete 1. 😄)
+
+
+
+```{=html}
+&lt;div class="countdown" id="timer_60180400" style="right:0;bottom:0;" data-warnwhen="0"&gt;
+&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;07&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
+&lt;/div&gt;
+```
+
+
+
+
+
+
+
+---
+class: middle, inverse, center
+
+# The tidyverse
+
+---
+background-image: url(../img/tidyverse_celestial.png)
+background-size: contain
+
+---
+
+## What is the tidyverse?
+
+&gt; The tidyverse is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures. -- Dr. Hadley Wickham
+
+- A human-friendly syntax and semantics to make code more understandable
+- The functions in the tidyverse often wraps harder-to-understand functions into simpler, more understandable forms
+- We're taking an opinionated choice here
+    - Covers maybe 85% of the cases you'll ever face
+    - Takes a particular viewpoint about how data _should_ be organized
+- But this makes things easier and simpler
+
+----
+The [tidyverse.org](https://www.tidyverse.org) site and the [R4DS book](https://r4ds.had.co.nz) 
+are the definitive sources for tidyverse information.  
+The packages are united in a common philosophy of how data analysis should be done.
+
+---
+background-image: url(children/tidyverse_pkgs.png)
+background-size: contain
+---
+
+## The tidyverse
+
+### Core packages
+
+&lt;font size=5&gt;
+.pull-left[
+- [**readr**](http://readr.tidyverse.org): Read Rectangular Text Data
+- [**dplyr**](http://dplyr.tidyverse.org): A Grammar of Data Manipulation
+- [**tidyr**](http://tidyr.tidyverse.org): Tidy Messy Data
+- [**purrr**](http://purrr.tidyverse.org): Functional Programming Tools
+]
+.pull-right[
+- [**ggplot2**](http://ggplot2.tidyverse.org): Create Elegant Data Visualisations Using the Grammar of Graphics
+- [**forcats**](http://forcats.tidyverse.org): Tools for Working with Categorical Variables (Factors)
+- [**lubridate**](http://lubridate.tidyverse.org): Make Dealing with Dates a Little Easier
+- [**stringr**](http://stringr.tidyverse.org): Simple, Consistent Wrappers for Common String Operations
+]
+&lt;/font&gt;
+
+---
+background-image: url(../img/workflow1.png)
+background-size: contain
+
+.footnote[From [Mastering the tidyverse](https://github.com/rstudio-education/master-the-tidyverse) by Garrett Grolemund]
+---
+background-image: url(../img/workflow2.png)
+background-size: contain
+
+---
+## The tidyverse
+
+### Resources
+
+.pull-left[
+**Cheatsheets**
+
++ [Data import](https://github.com/rstudio/cheatsheets/blob/master/data-import.pdf)
++ [Data transformation](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
++ [Manipulating categorical variables](https://github.com/rstudio/cheatsheets/blob/master/factors.pdf)
++ [Manipulating strings](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf)
++ [Manipulating dates](https://github.com/rstudio/cheatsheets/blob/master/lubridate.pdf)
+]
+.pull-right[
+[&lt;img style="height:300px; width:224px; border: 3px solid black;" src="../../../img/r4ds.png"/&gt;](https://r4ds.had.co.nz/)
+]
+
+
+
+
+---
+class: middle, center, inverse
+
+# Data ingestion
+
+---
+
+## Data ingestion
+
+Unlike Excel, you have to pull data into R for R to operate on it
+
+Typically your data is in some sort of file (Excel, csv, sas7bdat, txt)
+
+You need to find a way to pull it into R
+
+The GUI you've used is one way, but not very programmatic. This is a problem for verification and reproducibility.
+
+---
+
+## The `readr` package
+
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Function &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Reads &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_csv() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Comma separated values &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_csv2() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Semi-colon separated values &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_delim() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; General delimited files &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_fwf() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Fixed width files &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_tsv() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tab delimited values &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+Compared to data ingestion functions in base R, these are
+
+1. around 10x faster
+1. returns _tibbles_ (enhanced data.frame)
+1. Have better defaults
+---
+
+## Data ingestion
+
+The **readr** package is meant to ingest rectangular data.
+
+There are of course many other data formats that might need to be read. R provides functionality to read many of these.
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Function &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Reads &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_csv() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Comma separated values &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_csv2() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Semi-colon separated values &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_delim() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; General delimited files &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_fwf() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Fixed width files &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; read_tsv() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tab delimited values &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+## Example data sets
+
+We will use the following files for examples in this section
+
+1. BreastCancer_Clinical.csv
+1. BreastCancer.xlsx
+1. BreastCancer_Expression_full.csv
+1. weather.csv
+
+Take a couple of minutes and download these files into your RStudio Project
+
+
+```{=html}
+&lt;div class="countdown" id="timer_60180467" style="right:0;bottom:0;" data-warnwhen="0"&gt;
+&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;03&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
+&lt;/div&gt;
+```
+
+&gt; Note where you store the data files within your project. Your path will not be the same as mine, since I probably have a different directory structure than you
+
+&gt; You'll see a lot of `..` in my file paths. This means _go up one level_ in the hierarchy of file paths.
+---
+
+## Data ingestion
+
+
+
+
+```r
+brca_clinical &lt;- readr::read_csv('../../data/BreastCancer_Clinical.csv')
+brca_clinical2 &lt;- data.table::fread('../../data/BreastCancer_Clinical.csv')
+```
+
+.pull-left[
+
+```r
+str(brca_clinical)
+```
+
+```
+spec_tbl_df [77 × 30] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+ $ Complete TCGA ID                   : chr [1:77] "TCGA-A2-A0CM" "TCGA-BH-A18Q" "TCGA-A7-A0CE" "TCGA-D8-A142" ...
+ $ Gender                             : chr [1:77] "FEMALE" "FEMALE" "FEMALE" "FEMALE" ...
+ $ Age at Initial Pathologic Diagnosis: num [1:77] 40 56 57 74 61 67 45 48 59 36 ...
+ $ ER Status                          : chr [1:77] "Negative" "Negative" "Negative" "Negative" ...
+ $ PR Status                          : chr [1:77] "Negative" "Negative" "Negative" "Negative" ...
+ $ HER2 Final Status                  : chr [1:77] "Negative" "Negative" "Negative" "Negative" ...
+ $ Tumor                              : chr [1:77] "T2" "T2" "T2" "T3" ...
+ $ Tumor--T1 Coded                    : chr [1:77] "T_Other" "T_Other" "T_Other" "T_Other" ...
+ $ Node                               : chr [1:77] "N0" "N1" "N0" "N0" ...
+ $ Node-Coded                         : chr [1:77] "Negative" "Positive" "Negative" "Negative" ...
+ $ Metastasis                         : chr [1:77] "M0" "M0" "M0" "M0" ...
+ $ Metastasis-Coded                   : chr [1:77] "Negative" "Negative" "Negative" "Negative" ...
+ $ AJCC Stage                         : chr [1:77] "Stage IIA" "Stage IIB" "Stage IIA" "Stage IIB" ...
+ $ Converted Stage                    : chr [1:77] "Stage IIA" "No_Conversion" "Stage IIA" "Stage IIB" ...
+ $ Survival Data Form                 : chr [1:77] "followup" "enrollment" "followup" "followup" ...
+ $ Vital Status                       : chr [1:77] "DECEASED" "DECEASED" "LIVING" "LIVING" ...
+ $ Days to Date of Last Contact       : num [1:77] 754 1692 309 425 775 ...
+ $ Days to date of Death              : num [1:77] 754 1692 NA NA NA ...
+ $ OS event                           : num [1:77] 1 1 0 0 0 0 0 0 0 0 ...
+ $ OS Time                            : num [1:77] 754 1692 309 425 775 ...
+ $ PAM50 mRNA                         : chr [1:77] "Basal-like" "Basal-like" "Basal-like" "Basal-like" ...
+ $ SigClust Unsupervised mRNA         : num [1:77] -12 -12 0 0 -12 -12 -12 -12 0 0 ...
+ $ SigClust Intrinsic mRNA            : num [1:77] -13 -13 -13 -13 -13 -13 -13 -13 -13 -13 ...
+ $ miRNA Clusters                     : num [1:77] 4 5 5 3 2 5 4 4 5 5 ...
+ $ methylation Clusters               : num [1:77] 4 5 5 5 5 5 5 5 5 5 ...
+ $ RPPA Clusters                      : chr [1:77] "Basal" "Basal" "Basal" "X" ...
+ $ CN Clusters                        : num [1:77] 4 1 1 1 1 3 3 1 3 1 ...
+ $ Integrated Clusters (with PAM50)   : num [1:77] 2 2 2 2 2 2 2 2 2 2 ...
+ $ Integrated Clusters (no exp)       : num [1:77] 1 2 2 2 2 2 2 2 2 2 ...
+ $ Integrated Clusters (unsup exp)    : num [1:77] 1 2 2 2 2 2 2 2 2 2 ...
+ - attr(*, "spec")=
+  .. cols(
+  ..   `Complete TCGA ID` = col_character(),
+  ..   Gender = col_character(),
+  ..   `Age at Initial Pathologic Diagnosis` = col_double(),
+  ..   `ER Status` = col_character(),
+  ..   `PR Status` = col_character(),
+  ..   `HER2 Final Status` = col_character(),
+  ..   Tumor = col_character(),
+  ..   `Tumor--T1 Coded` = col_character(),
+  ..   Node = col_character(),
+  ..   `Node-Coded` = col_character(),
+  ..   Metastasis = col_character(),
+  ..   `Metastasis-Coded` = col_character(),
+  ..   `AJCC Stage` = col_character(),
+  ..   `Converted Stage` = col_character(),
+  ..   `Survival Data Form` = col_character(),
+  ..   `Vital Status` = col_character(),
+  ..   `Days to Date of Last Contact` = col_double(),
+  ..   `Days to date of Death` = col_double(),
+  ..   `OS event` = col_double(),
+  ..   `OS Time` = col_double(),
+  ..   `PAM50 mRNA` = col_character(),
+  ..   `SigClust Unsupervised mRNA` = col_double(),
+  ..   `SigClust Intrinsic mRNA` = col_double(),
+  ..   `miRNA Clusters` = col_double(),
+  ..   `methylation Clusters` = col_double(),
+  ..   `RPPA Clusters` = col_character(),
+  ..   `CN Clusters` = col_double(),
+  ..   `Integrated Clusters (with PAM50)` = col_double(),
+  ..   `Integrated Clusters (no exp)` = col_double(),
+  ..   `Integrated Clusters (unsup exp)` = col_double()
+  .. )
+```
+]
+.pull-right[
+
+```r
+str(brca_clinical2)
+```
+
+```
+Classes 'data.table' and 'data.frame':	77 obs. of  30 variables:
+ $ Complete TCGA ID                   : chr  "TCGA-A2-A0CM" "TCGA-BH-A18Q" "TCGA-A7-A0CE" "TCGA-D8-A142" ...
+ $ Gender                             : chr  "FEMALE" "FEMALE" "FEMALE" "FEMALE" ...
+ $ Age at Initial Pathologic Diagnosis: int  40 56 57 74 61 67 45 48 59 36 ...
+ $ ER Status                          : chr  "Negative" "Negative" "Negative" "Negative" ...
+ $ PR Status                          : chr  "Negative" "Negative" "Negative" "Negative" ...
+ $ HER2 Final Status                  : chr  "Negative" "Negative" "Negative" "Negative" ...
+ $ Tumor                              : chr  "T2" "T2" "T2" "T3" ...
+ $ Tumor--T1 Coded                    : chr  "T_Other" "T_Other" "T_Other" "T_Other" ...
+ $ Node                               : chr  "N0" "N1" "N0" "N0" ...
+ $ Node-Coded                         : chr  "Negative" "Positive" "Negative" "Negative" ...
+ $ Metastasis                         : chr  "M0" "M0" "M0" "M0" ...
+ $ Metastasis-Coded                   : chr  "Negative" "Negative" "Negative" "Negative" ...
+ $ AJCC Stage                         : chr  "Stage IIA" "Stage IIB" "Stage IIA" "Stage IIB" ...
+ $ Converted Stage                    : chr  "Stage IIA" "No_Conversion" "Stage IIA" "Stage IIB" ...
+ $ Survival Data Form                 : chr  "followup" "enrollment" "followup" "followup" ...
+ $ Vital Status                       : chr  "DECEASED" "DECEASED" "LIVING" "LIVING" ...
+ $ Days to Date of Last Contact       : int  754 1692 309 425 775 964 1027 1288 1319 1471 ...
+ $ Days to date of Death              : num  754 1692 NA NA NA ...
+ $ OS event                           : int  1 1 0 0 0 0 0 0 0 0 ...
+ $ OS Time                            : int  754 1692 309 425 775 964 1027 1288 1319 1471 ...
+ $ PAM50 mRNA                         : chr  "Basal-like" "Basal-like" "Basal-like" "Basal-like" ...
+ $ SigClust Unsupervised mRNA         : int  -12 -12 0 0 -12 -12 -12 -12 0 0 ...
+ $ SigClust Intrinsic mRNA            : int  -13 -13 -13 -13 -13 -13 -13 -13 -13 -13 ...
+ $ miRNA Clusters                     : int  4 5 5 3 2 5 4 4 5 5 ...
+ $ methylation Clusters               : int  4 5 5 5 5 5 5 5 5 5 ...
+ $ RPPA Clusters                      : chr  "Basal" "Basal" "Basal" "X" ...
+ $ CN Clusters                        : int  4 1 1 1 1 3 3 1 3 1 ...
+ $ Integrated Clusters (with PAM50)   : int  2 2 2 2 2 2 2 2 2 2 ...
+ $ Integrated Clusters (no exp)       : int  1 2 2 2 2 2 2 2 2 2 ...
+ $ Integrated Clusters (unsup exp)    : int  1 2 2 2 2 2 2 2 2 2 ...
+ - attr(*, ".internal.selfref")=&lt;externalptr&gt; 
+```
+]
+
+---
+
+## A note on two "super"-data.frame objects
+
+.pull-left[
+A `tibble`
+
+```
+# A tibble: 6 x 30
+  `Complete TCGA … Gender `Age at Initial… `ER Status` `PR Status`
+  &lt;chr&gt;            &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;      
+1 TCGA-A2-A0CM     FEMALE               40 Negative    Negative   
+2 TCGA-BH-A18Q     FEMALE               56 Negative    Negative   
+3 TCGA-A7-A0CE     FEMALE               57 Negative    Negative   
+4 TCGA-D8-A142     FEMALE               74 Negative    Negative   
+5 TCGA-AO-A0J6     FEMALE               61 Negative    Negative   
+6 TCGA-A2-A0YM     FEMALE               67 Negative    Negative   
+# … with 25 more variables: `HER2 Final Status` &lt;chr&gt;, Tumor &lt;chr&gt;, `Tumor--T1
+#   Coded` &lt;chr&gt;, Node &lt;chr&gt;, `Node-Coded` &lt;chr&gt;, Metastasis &lt;chr&gt;,
+#   `Metastasis-Coded` &lt;chr&gt;, `AJCC Stage` &lt;chr&gt;, `Converted Stage` &lt;chr&gt;,
+#   `Survival Data Form` &lt;chr&gt;, `Vital Status` &lt;chr&gt;, `Days to Date of Last
+#   Contact` &lt;dbl&gt;, `Days to date of Death` &lt;dbl&gt;, `OS event` &lt;dbl&gt;, `OS
+#   Time` &lt;dbl&gt;, `PAM50 mRNA` &lt;chr&gt;, `SigClust Unsupervised mRNA` &lt;dbl&gt;,
+#   `SigClust Intrinsic mRNA` &lt;dbl&gt;, `miRNA Clusters` &lt;dbl&gt;, `methylation
+#   Clusters` &lt;dbl&gt;, `RPPA Clusters` &lt;chr&gt;, `CN Clusters` &lt;dbl&gt;, `Integrated
+#   Clusters (with PAM50)` &lt;dbl&gt;, `Integrated Clusters (no exp)` &lt;dbl&gt;,
+#   `Integrated Clusters (unsup exp)` &lt;dbl&gt;
+```
+]
+.pull-right[
+A `data.table`
+
+
+```
+   Complete TCGA ID Gender Age at Initial Pathologic Diagnosis ER Status
+1:     TCGA-A2-A0CM FEMALE                                  40  Negative
+2:     TCGA-BH-A18Q FEMALE                                  56  Negative
+3:     TCGA-A7-A0CE FEMALE                                  57  Negative
+4:     TCGA-D8-A142 FEMALE                                  74  Negative
+5:     TCGA-AO-A0J6 FEMALE                                  61  Negative
+6:     TCGA-A2-A0YM FEMALE                                  67  Negative
+   PR Status HER2 Final Status Tumor Tumor--T1 Coded Node Node-Coded Metastasis
+1:  Negative          Negative    T2         T_Other   N0   Negative         M0
+2:  Negative          Negative    T2         T_Other   N1   Positive         M0
+3:  Negative          Negative    T2         T_Other   N0   Negative         M0
+4:  Negative          Negative    T3         T_Other   N0   Negative         M0
+5:  Negative          Negative    T2         T_Other   N0   Negative         M0
+6:  Negative          Negative    T2         T_Other   N0   Negative         M0
+   Metastasis-Coded AJCC Stage Converted Stage Survival Data Form Vital Status
+1:         Negative  Stage IIA       Stage IIA           followup     DECEASED
+2:         Negative  Stage IIB   No_Conversion         enrollment     DECEASED
+3:         Negative  Stage IIA       Stage IIA           followup       LIVING
+4:         Negative  Stage IIB       Stage IIB           followup       LIVING
+5:         Negative  Stage IIA       Stage IIA           followup       LIVING
+6:         Negative  Stage IIA       Stage IIA           followup       LIVING
+   Days to Date of Last Contact Days to date of Death OS event OS Time
+1:                          754                   754        1     754
+2:                         1692                  1692        1    1692
+3:                          309                    NA        0     309
+4:                          425                    NA        0     425
+5:                          775                    NA        0     775
+6:                          964                    NA        0     964
+   PAM50 mRNA SigClust Unsupervised mRNA SigClust Intrinsic mRNA miRNA Clusters
+1: Basal-like                        -12                     -13              4
+2: Basal-like                        -12                     -13              5
+3: Basal-like                          0                     -13              5
+4: Basal-like                          0                     -13              3
+5: Basal-like                        -12                     -13              2
+6: Basal-like                        -12                     -13              5
+   methylation Clusters RPPA Clusters CN Clusters
+1:                    4         Basal           4
+2:                    5         Basal           1
+3:                    5         Basal           1
+4:                    5             X           1
+5:                    5         Basal           1
+6:                    5         Basal           3
+   Integrated Clusters (with PAM50) Integrated Clusters (no exp)
+1:                                2                            1
+2:                                2                            2
+3:                                2                            2
+4:                                2                            2
+5:                                2                            2
+6:                                2                            2
+   Integrated Clusters (unsup exp)
+1:                               1
+2:                               2
+3:                               2
+4:                               2
+5:                               2
+6:                               2
+```
+]
+
+---
+
+## A note on two "super"-data.frame objects
+
++ A `tibble` works pretty much like any `data.frame`, but the printing is a little saner
++ A `data.table` is faster, has more inherent functionality, but has a very different syntax
+
+
+--
+
+Suggested modifications:
+
++ If using `fread`, convert the resulting object to a `data.frame` or `tibble` using `as_data_frame()` or `as_tibble()`
++ Convert the column names to not have spaces using, for example,
+
+
+```r
+brca_clinical &lt;- janitor::clean_names(brca_clinical)
+```
+
+--
+
+We'll work almost entirely with `tibble`'s and not `data.table`. 
+
+However, if speed is a consideration for you, it might be worth learning to work with data.table objects. Some resources for this are:
+
+- [A gentle introduction to data.table](https://atrebas.github.io/post/2020-06-17-datatable-introduction/)
+- [data.table in R: The Complete Beginners Guide](https://www.machinelearningplus.com/data-manipulation/datatable-in-r-complete-guide/)
+- [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/datatable.pdf)
+
+
+---
+
+## Data ingestion
+
+Note that you **have** to give a name to what you're importing using `read_*` or whatever you're using, otherwise it won't stay in R
+
+
+```r
+brca_clinical &lt;- readr::read_csv('../../data/BreastCancer_Clinical.csv')
+```
+
+![](../img/env.png)
+
+&gt; See what happens if you don't give a name to a dataset you ingest.
+
+---
+
+## Reading Excel
+
+You can find the names of the sheets in an Excel file:
+
+```r
+readxl::excel_sheets('../../data/BreastCancer.xlsx')
+```
+
+```
+[1] "Cllinical"  "Expression"
+```
+
+So you can ingest a particular sheet from an Excel file using
+
+```r
+brca_expression &lt;- readxl::read_excel('../../data/BreastCancer.xlsx', sheet='Expression')
+```
+
+---
+class: middle, center
+
+# Data export
+
+---
+
+## Data export
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Type &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Function &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Package &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Notes &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; write_csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; readr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Takes care of formatting &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; write.csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; base &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Built in &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; fwrite &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; data.table &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Fastest &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Excel &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; write.xlsx &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; openxlsx &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sas7bdat &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; write_sas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; haven &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SAS format &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; json &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; write_json &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; jsonlite &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; JSON format &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+We'll often save tabular results using these functions
+
+.footnote[These can also be useful for exporting results, but the R Markdown related packages are better for that]
+
+---
+class: middle,center,inverse
+
+# Simplifying Import/Export
+
+---
+
+We'll be using a package that makes this easier. 
+
+It's called **rio** and it has two basic functions: `import` and `export`.
+
+The `rio` package uses the different packages mentioned earlier but unifies it into a single syntax
+
+For example:
+
+
+```r
+rio::import('../../data/clinical_data_breast_cancer_modified.csv')
+```
+
+--
+
+**rio** reads the end of the file being imported or exported and decides which functions from which package should be used for the job. 
+
+**rio** accesses different packages that are right for each job, so you don't have to.
+
+---
+
+You can also import multiple sheets from Excel, or multiple objects from .RData files, into a list of data frames
+
+
+```r
+dat &lt;- rio::import_list('../../data/BreastCancer.xlsx')
+```
+
+.pull-left[
+
+```r
+class(dat)
+```
+
+```
+[1] "list"
+```
+
+```r
+names(dat)
+```
+
+```
+[1] "Cllinical"  "Expression"
+```
+]
+.pull-right[
+
+```r
+for(i in 1:length(dat)){
+  print(paste0('The object dat$',names(dat)[i],' is of class ', class(dat[[i]])))
+}
+```
+
+```
+[1] "The object dat$Cllinical is of class data.frame"
+[1] "The object dat$Expression is of class data.frame"
+```
+
+]
+
+---
+
+## Saving your work
+
+You would often like to store intermediate datasets, and final datasets, so that you can access them quickly.
+
+There are several ways of saving even large datasets so that they can be quickly accessed. 
+
+| Function  | Package | Example                                  | Retrieving the stored data          |
+|-----------|---------|------------------------------------------|-------------------------------------|
+| saveRDS   | base    | `saveRDS(weather, file = 'weather.rds')` | `weather &lt;- readRDS('weather.rds')` |
+| write_fst | fst     | `write_fst(weather, file='weather.fst')` | `weather &lt;- read_fst('weather.fst')` |
+
+These methods are meant for storing .fatinline[single objects]
+
+---
+
+## Saving your work
+
+If you want to store all of your objects into a single file, you can store them in a .RData file.
+
+
+```r
+save.image(file="&lt;filename&gt;.RData")
+```
+
+To keep multiple specified objects in a .RData file,
+
+
+```r
+save(&lt;obj1&gt;, &lt;obj2&gt;, &lt;obj3&gt;, file = "&lt;filename&gt;.RData")
+```
+
+------
+
+## Retrieving your work
+
+You can retrieve the objects in a .RData file using the function `load`. 
+
+
+```r
+load(file = "&lt;filename&gt;.RData")
+```
+
+This will store each object in its original name in your R environment. 
+
+
+
+
+
+
+
+
+
+---
+class: middle, center, inverse
+
+# Data munging
+
+---
+
+## Data transformation (dplyr)
+
+The `dplyr` package gives us a few verbs for data manipulation
+
+
+|Function  |Purpose                                        |
+|:---------|:----------------------------------------------|
+|select    |Select columns based on name or position       |
+|mutate    |Create or change a column                      |
+|filter    |Extract rows based on some criteria            |
+|arrange   |Re-order rows based on values of variable(s)   |
+|group_by  |Split a dataset by unique values of a variable |
+|summarize |Create summary statistics based on columns     |
+
+---
+
+## `select`
+
+You can select columns by name or position, of course, e.g., `select(weather, month)` or `select(weather, 3)`
+
+You can select consecutive columns using `:` notation, e.g. `select(weather, d1:d31)`
+
+You can also select columns based on some criteria, which are encapsulated in functions.
+
+- `starts_with("___")`, `ends_with("___")`, `contains("____")`
+- `one_of("____","_____","______")`
+- `everything()`
+
+There are others; see `help(starts_with)`.
+
+These selection methods work in all tidyverse functions
+
+&gt; Note that for `select` the names of the columns don't need to be quoted. This is called *non-standard evaluation* and
+is a convenience. However for the criteria-based selectors within `select`, you **do** need to quote the criteria
+
+---
+
+## select
+
+
+```r
+weather_data &lt;- rio::import('../../data/weather.csv')
+head(weather_data)
+```
+
+```
+       id year month element d1   d2   d3 d4   d5 d6 d7 d8 d9  d10  d11 d12 d13
+1 MX17004 2010     1    tmax NA   NA   NA NA   NA NA NA NA NA   NA   NA  NA  NA
+2 MX17004 2010     1    tmin NA   NA   NA NA   NA NA NA NA NA   NA   NA  NA  NA
+3 MX17004 2010     2    tmax NA 27.3 24.1 NA   NA NA NA NA NA   NA 29.7  NA  NA
+4 MX17004 2010     2    tmin NA 14.4 14.4 NA   NA NA NA NA NA   NA 13.4  NA  NA
+5 MX17004 2010     3    tmax NA   NA   NA NA 32.1 NA NA NA NA 34.5   NA  NA  NA
+6 MX17004 2010     3    tmin NA   NA   NA NA 14.2 NA NA NA NA 16.8   NA  NA  NA
+  d14 d15  d16 d17 d18 d19 d20 d21 d22  d23 d24 d25 d26 d27 d28 d29  d30 d31
+1  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA 27.8  NA
+2  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA 14.5  NA
+3  NA  NA   NA  NA  NA  NA  NA  NA  NA 29.9  NA  NA  NA  NA  NA  NA   NA  NA
+4  NA  NA   NA  NA  NA  NA  NA  NA  NA 10.7  NA  NA  NA  NA  NA  NA   NA  NA
+5  NA  NA 31.1  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA
+6  NA  NA 17.6  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA
+```
+
+---
+
+## select
+
+
+```r
+weather1 &lt;- select(weather_data, year, month, d1:d31) 
+head(weather1)
+```
+
+```
+  year month d1   d2   d3 d4   d5 d6 d7 d8 d9  d10  d11 d12 d13 d14 d15  d16
+1 2010     1 NA   NA   NA NA   NA NA NA NA NA   NA   NA  NA  NA  NA  NA   NA
+2 2010     1 NA   NA   NA NA   NA NA NA NA NA   NA   NA  NA  NA  NA  NA   NA
+3 2010     2 NA 27.3 24.1 NA   NA NA NA NA NA   NA 29.7  NA  NA  NA  NA   NA
+4 2010     2 NA 14.4 14.4 NA   NA NA NA NA NA   NA 13.4  NA  NA  NA  NA   NA
+5 2010     3 NA   NA   NA NA 32.1 NA NA NA NA 34.5   NA  NA  NA  NA  NA 31.1
+6 2010     3 NA   NA   NA NA 14.2 NA NA NA NA 16.8   NA  NA  NA  NA  NA 17.6
+  d17 d18 d19 d20 d21 d22  d23 d24 d25 d26 d27 d28 d29  d30 d31
+1  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA 27.8  NA
+2  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA 14.5  NA
+3  NA  NA  NA  NA  NA  NA 29.9  NA  NA  NA  NA  NA  NA   NA  NA
+4  NA  NA  NA  NA  NA  NA 10.7  NA  NA  NA  NA  NA  NA   NA  NA
+5  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA
+6  NA  NA  NA  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA
+```
+
+---
+
+## select
+
+
+```r
+weather1 &lt;- select(weather_data, starts_with('d')) 
+head(weather1)
+```
+
+```
+  d1   d2   d3 d4   d5 d6 d7 d8 d9  d10  d11 d12 d13 d14 d15  d16 d17 d18 d19
+1 NA   NA   NA NA   NA NA NA NA NA   NA   NA  NA  NA  NA  NA   NA  NA  NA  NA
+2 NA   NA   NA NA   NA NA NA NA NA   NA   NA  NA  NA  NA  NA   NA  NA  NA  NA
+3 NA 27.3 24.1 NA   NA NA NA NA NA   NA 29.7  NA  NA  NA  NA   NA  NA  NA  NA
+4 NA 14.4 14.4 NA   NA NA NA NA NA   NA 13.4  NA  NA  NA  NA   NA  NA  NA  NA
+5 NA   NA   NA NA 32.1 NA NA NA NA 34.5   NA  NA  NA  NA  NA 31.1  NA  NA  NA
+6 NA   NA   NA NA 14.2 NA NA NA NA 16.8   NA  NA  NA  NA  NA 17.6  NA  NA  NA
+  d20 d21 d22  d23 d24 d25 d26 d27 d28 d29  d30 d31
+1  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA 27.8  NA
+2  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA 14.5  NA
+3  NA  NA  NA 29.9  NA  NA  NA  NA  NA  NA   NA  NA
+4  NA  NA  NA 10.7  NA  NA  NA  NA  NA  NA   NA  NA
+5  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA
+6  NA  NA  NA   NA  NA  NA  NA  NA  NA  NA   NA  NA
+```
+
+
+---
+
+## select
+
+The flexibility of the `select` function, and others we'll see presently, is quite powerful. 
+
+Suppose you have a large genomic data where the columns are different genes, and suppose that the housekeeping genes all start with "HK". Then, in order to _remove_ the housekeeping genes, you could just do
+
+
+```r
+new_data &lt;- select(old_data, -starts_with("HK"))
+```
+
+Here, the `-` sign means, remove those columns.
+
+Also note that we have to assign the selected dataset to a new (or old) name in order to 
+preserve it in the workspace.
+
+---
+
+## select
+
+I always prefer naming my columns well and using the capabilities of `select` to grab columns. 
+
+However, you can use `select` with column numbers. For example, if you wanted to grab the 
+first 4 columns of a dataset, you could do
+
+
+```r
+new_data &lt;- select(old_data, 1:4)
+```
+
+.footnote[The notation `1:4` is a short hand for the sequence `1,2,3,4`. Generally, the notation `m:n` means the set of consecutive integers between `m` and `n`.]
+
+---
+
+## Exercise
+
+1. Load the BreastCancer_Expression_full.csv file into R, naming it `brca_expression`.
+1. Create a new dataset from `brca_expression` that contains columns with names starting with "NP_0019"
+1. Create a second dataset from `brca_expression` that contains the column 'TCGA_ID' and columns starting with "NP_00200".
+1. Take this last dataset and convert it's column names to lower case using `janitor::clean_names`
+
+
+```{=html}
+&lt;div class="countdown" id="timer_6018037c" style="right:0;bottom:0;" data-warnwhen="0"&gt;
+&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;10&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
+&lt;/div&gt;
+```
+
+
+---
+
+## mutate
+
+`mutate`, as the name suggests, either creates a new column in your data set or transforms an existing column.
+
+We'll work with the `mpg` dataset that is included in the **ggplot2** package. This is a fuel economy dataset from the US EPA. There are two columns, `hwy` and `cty` which give the highway and city fuel efficiency in miles per gallon. 
+
+For our non-American friends, we will convert these columns to kilometres per litre. 
+
+.pull-left[
+
+```r
+mpg_si &lt;- mutate(mpg, 
+                 hwy_si = hwy * 1.6 / 3.8,
+                 cty_si = cty * 1.6 / 3.8)
+str(mpg_si)
+```
+
+This creates new columns `hwy_si` and `cty_si`
+]
+.pull-right[
+
+```
+tibble [234 × 13] (S3: tbl_df/tbl/data.frame)
+ $ manufacturer: chr [1:234] "audi" "audi" "audi" "audi" ...
+ $ model       : chr [1:234] "a4" "a4" "a4" "a4" ...
+ $ displ       : num [1:234] 1.8 1.8 2 2 2.8 2.8 3.1 1.8 1.8 2 ...
+ $ year        : int [1:234] 1999 1999 2008 2008 1999 1999 2008 1999 1999 2008 ...
+ $ cyl         : int [1:234] 4 4 4 4 6 6 6 4 4 4 ...
+ $ trans       : chr [1:234] "auto(l5)" "manual(m5)" "manual(m6)" "auto(av)" ...
+ $ drv         : chr [1:234] "f" "f" "f" "f" ...
+ $ cty         : int [1:234] 18 21 20 21 16 18 18 18 16 20 ...
+ $ hwy         : int [1:234] 29 29 31 30 26 26 27 26 25 28 ...
+ $ fl          : chr [1:234] "p" "p" "p" "p" ...
+ $ class       : chr [1:234] "compact" "compact" "compact" "compact" ...
+ $ hwy_si      : num [1:234] 12.2 12.2 13.1 12.6 10.9 ...
+ $ cty_si      : num [1:234] 7.58 8.84 8.42 8.84 6.74 ...
+```
+]
+---
+
+## mutate
+
+`mutate`, as the name suggests, either creates a new column in your data set or transforms an existing column.
+
+We'll work with the `mpg` dataset that is included in the **ggplot2** package. This is a fuel economy dataset from the US EPA. There are two columns, `hwy` and `cty` which give the highway and city fuel efficiency in miles per gallon. 
+
+For our non-American friends, we will convert these columns to kilometres per litre. 
+
+.pull-left[
+
+```r
+mpg &lt;- mutate(mpg, 
+              hwy = hwy * 1.6 / 3.8,
+              cty = cty * 1.6 / 3.8)
+str(mpg)
+```
+
+This changes the original data in place, and replaces the columns with the transformed data
+]
+.pull-right[
+
+```
+tibble [234 × 11] (S3: tbl_df/tbl/data.frame)
+ $ manufacturer: chr [1:234] "audi" "audi" "audi" "audi" ...
+ $ model       : chr [1:234] "a4" "a4" "a4" "a4" ...
+ $ displ       : num [1:234] 1.8 1.8 2 2 2.8 2.8 3.1 1.8 1.8 2 ...
+ $ year        : int [1:234] 1999 1999 2008 2008 1999 1999 2008 1999 1999 2008 ...
+ $ cyl         : int [1:234] 4 4 4 4 6 6 6 4 4 4 ...
+ $ trans       : chr [1:234] "auto(l5)" "manual(m5)" "manual(m6)" "auto(av)" ...
+ $ drv         : chr [1:234] "f" "f" "f" "f" ...
+ $ cty         : num [1:234] 7.58 8.84 8.42 8.84 6.74 ...
+ $ hwy         : num [1:234] 12.2 12.2 13.1 12.6 10.9 ...
+ $ fl          : chr [1:234] "p" "p" "p" "p" ...
+ $ class       : chr [1:234] "compact" "compact" "compact" "compact" ...
+```
+]
+
+---
+
+## across
+
+**dplyr** version 1.0 introduced a new verb, `across` to allow functions like `mutate` (and `summarize`, which we shall see in the statistics module) to act on a selection of columns 
+which can be chosen using the same syntax as `select`, or by condition. The `mutate` operation changes variables **in place** in this paradigm
+
+.pull-left[
+
+```r
+mutate(mpg, 
+       cty = cty * 1.6/3.8,
+       hwy = hwy * 1.6/3.8)
+```
+
+]
+.pull-right[
+
+```r
+mutate(mpg, 
+       across(c(cty, hwy), 
+                   function(x) {x * 1.6/3.8}))
+```
+]
+
+-----
+
+
+```r
+mutate(mpg, 
+       across(where(is.character), as.factor)) # select based on condition
+```
+
+-----
+
+---
+
+## Exercise
+
+The `across` concept is quite powerful. We'll explore it a bit more using the **palmerpenguins** package.
+
+1. Install the **palmerpenguins** package using `remotes::install_github('allisonhorst/palmerpenguins')`
+1. Activate the library using `library(palmerpenguins)`
+1. Display the first few rows of the data using `head()`
+1. You'll notice that there are missing values in some columns. Let's replace these with the column means.
+
+
+```{=html}
+&lt;div class="countdown" id="timer_601805cf" style="right:0;bottom:0;" data-warnwhen="0"&gt;
+&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;10&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
+&lt;/div&gt;
+```
+
+---
+
+## filter
+
+`filter` extracts **rows** based on criteria. 
+
+Some comparison operators for filtering
+
+| Operator | Meaning                          |
+|----------|----------------------------------|
+| ==       | Equals                           |
+| !=       | Not equals                       |
+| &gt; / &lt;    | Greater / less than              |
+| &gt;= / &lt;=  | Greater or equal / Less or equal |
+| !=       | Not equal                        |
+| %in%     | In a set                         |
+| is.na()  | is a missing value |
+| !is.na() | not a missing value|
+
+Combining comparisons
+
+| Operator   | Meaning |
+|------------|---------|
+| &amp;          | And     |
+| &amp;#124;       | Or      |
+
+---
+
+## filter
+
+Some comparison operators for filtering
+
+Strings: `str_detect(&lt;variable&gt;, "&lt;string&gt;")` or `str_detect(&lt;variable&gt;, "&lt;regex&gt;")`
+
+Regex or regular expression basics:
+
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Expression &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Meaning &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; [a,b,c] &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Matches "a", "b" or "c" &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; [a-z] &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Matches letters between "a" and "z" &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; [^abc] &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Matches anything except "a", "b" and "c" &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; [:alpha:] &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; letters &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; [:digit:] &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; digits &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; [:alnum:] &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; letters or numbers &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; [:punct:] &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; punctuation &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.footnote[Many more details are available [here](https://stringr.tidyverse.org/articles/regular-expressions.html#special-characters-1) and a cheatsheet is available [here](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf)]
+
+---
+
+## filter
+
+The `filter` function extracts rows that meet logical criteria.
+
+.pull-left[
+
+```r
+filter(.data, ...)
+```
+]
+.pull-right[
++ `.data` is the data frame to transform
++ `...` represents one or more logical tests (returning rows for which the test is TRUE)
+]
+
+---
+
+## filter
+
+Let's use the `penguins` dataset again. We want to extract the **rows** with data for male Adelie penguins
+
+.pull-left[
+
+```r
+filter(penguins, 
+       (species == 'Adelie') &amp; 
+         (sex == 'male'))
+```
+]
+.pull-right[
+
+```
+# A tibble: 73 x 8
+   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt;
+ 1 Adelie  Torge…           39.1          18.7              181        3750
+ 2 Adelie  Torge…           39.3          20.6              190        3650
+ 3 Adelie  Torge…           39.2          19.6              195        4675
+ 4 Adelie  Torge…           38.6          21.2              191        3800
+ 5 Adelie  Torge…           34.6          21.1              198        4400
+ 6 Adelie  Torge…           42.5          20.7              197        4500
+ 7 Adelie  Torge…           46            21.5              194        4200
+ 8 Adelie  Biscoe           37.7          18.7              180        3600
+ 9 Adelie  Biscoe           38.2          18.1              185        3950
+10 Adelie  Biscoe           38.8          17.2              180        3800
+# … with 63 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+```
+]
+
+---
+
+## filter
+
+Let's extract rows with data from Biscoe island where the penguins are either below 3000 g or above 5000 g in weight.
+
+.pull-left[
+
+```r
+filter(penguins, (island == 'Biscoe') &amp; 
+  ((body_mass_g &lt; 3000) | (body_mass_g &gt; 5000)))
+```
+
+I'm a big fan of using parentheses to specify the individual
+comparisons in a complex query like we're doing here. 
+]
+.pull-right[
+
+```
+# A tibble: 65 x 8
+   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt;
+ 1 Adelie  Biscoe           34.5          18.1              187        2900
+ 2 Adelie  Biscoe           36.5          16.6              181        2850
+ 3 Adelie  Biscoe           36.4          17.1              184        2850
+ 4 Adelie  Biscoe           37.9          18.6              193        2925
+ 5 Gentoo  Biscoe           50            16.3              230        5700
+ 6 Gentoo  Biscoe           50            15.2              218        5700
+ 7 Gentoo  Biscoe           47.6          14.5              215        5400
+ 8 Gentoo  Biscoe           46.7          15.3              219        5200
+ 9 Gentoo  Biscoe           46.8          15.4              215        5150
+10 Gentoo  Biscoe           49            16.1              216        5550
+# … with 55 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+```
+]
+
+---
+
+## filter
+
+A common use of `filter` is to remove rows with missing values from your dataset
+
+.pull-left[
+
+```r
+penguins_complete &lt;- filter(penguins, 
+                            !is.na(bill_length_mm))
+head(penguins_complete)
+```
+
+`is.na` is a *function* that tests whether a value is missing or not. 
+
+So `!is.na` is the opposite of that. 
+
+&gt; The condition that you are using in `filter` is what you want **to keep**.
+]
+.pull-right[
+
+```
+# A tibble: 6 x 8
+  species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+1 Adelie  Torge…           39.1          18.7              181        3750 male 
+2 Adelie  Torge…           39.5          17.4              186        3800 fema…
+3 Adelie  Torge…           40.3          18                195        3250 fema…
+4 Adelie  Torge…           36.7          19.3              193        3450 fema…
+5 Adelie  Torge…           39.3          20.6              190        3650 male 
+6 Adelie  Torge…           38.9          17.8              181        3625 fema…
+# … with 1 more variable: year &lt;int&gt;
+```
+]
+
+---
+
+## filter
+
+### Two common mistakes
+
+1. Using .heatinline[`=`] instead of .saltinline[`==`]
+
+```r
+filter(penguins, species = 'Adelie')
+filter(penguins, species == 'Adelie')
+```
+
+2. Forgetting quotes
+
+```r
+filter(penguins, species == Adelie)
+filter(penguins, species == "Adelie")
+```
+
+
+---
+
+## Important distinction
+
+.pull-left[
+.acid[The `filter` function affects **rows** of a dataset]
+]
+.pull-right[
+.heat[The `select` function affects **columns** of a dataset]
+]
+
+---
+
+## slice
+
+You can use `slice` and siblings to subset **rows** of a data set by index. 
+
++ `slice(mpg, 1,2,5)` grabs rows 1, 2 and 5
++ `slice_head(mpg)` / `slice_tail(mpg)` grabs first/last row of data set
+    - You can specify an argument `n` for the number of rows to grab
+    - You can specify an argument `prop` for the proportion of rows to grab
++ `slice_sample(mpg, 10)` grabs 10 rows at random, without replacement
++ `slice_min(mpg, hwy)` / `slice_max(mpg, hwy)` gives the `n`/`prop` rows with the lowest/highest values of `hwy`.
+
+---
+
+## Exercise
+
+1. Extract the rows from `penguins` with the smallest 10% of penguins by mass
+1. Extract a random 20% of rows from `penguins`
+
+
+```{=html}
+&lt;div class="countdown" id="timer_60180652" style="right:0;bottom:0;" data-warnwhen="0"&gt;
+&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
+&lt;/div&gt;
+```
+
+
+---
+class: middle, center, inverse
+
+# Workflow pipes in the tidyverse
+
+---
+  
+## Pipes
+
+Pipes are a method in R to create analytic pipelines utilizing tidyverse functions.
+
+The pipe operator (denoted `%&gt;%`, spoken as "then") is what creates the pipes.
+
+You start with a dataset, and then progressively add functions to the pipe. Typically you save the result to a new object.
+
+Each element of the pipe takes as its first argument the results of the previous step, which typically is a data frame.
+
+Pipes are just a different representation of an analytic process that we can do in separate steps anyway. 
+
+.footnote[The keyboard shortcut for the pipe operator in RStudio is .heatinline[`Ctrl/Cmd + Shift + m`]]
+
+---
+
+## Pipes
+
+.pull-left[
+Without pipes
+
+
+```r
+mpg1 &lt;- mutate(mpg, id = 1:n())
+mpg2 &lt;- select(mpg1, id, year, trans, cty, hwy)
+mpg_final &lt;- mutate(mpg2, 
+                    across(c(cty, hwy), 
+                           function(x) {x * 1.6/3.8}))
+```
+
+]
+.pull-right[
+With pipes
+
+
+```r
+mpg_final &lt;- mpg %&gt;% 
+  mutate(id = 1:n()) %&gt;% 
+  select(id, year, trans, cty, hwy) %&gt;% 
+  mutate(across(c(cty, hwy), 
+                function(x){x*1.6/3.8}))
+```
+
+]
+
+The important things to note here are:
+
+1. When using pipes, the results of one operation are automatically entered into the **first argument** of the next function, so the actual specification omits the first argument
+1. If you need the results of one step to go to some other argument of the next function, you can represent that input by `.`, for example, .fatinline[`mpg %&gt;% lm(cty ~ hwy, data = .)`] takes the dataset `mpg` and places it in the argument for `data` in the `lm` function. 
+
+---
+
+## Exercise
+
+&lt;ol&gt;
+&lt;li&gt;Create a pipe that 
+&lt;ol type='a'&gt;
+  &lt;li&gt; starts with the _penguins_ dataset,
+  &lt;li&gt; extracts the species, bill length and body mass columns, 
+  &lt;li&gt; filters out rows with missing body mass measurements, and
+  &lt;li&gt; creates a new columns with mass in pounds (1 lb = 453 grams) 
+&lt;/ol&gt;
+&lt;/ol&gt;
+    
+
+```{=html}
+&lt;div class="countdown" id="timer_60180497" style="right:0;bottom:0;" data-warnwhen="0"&gt;
+&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
+&lt;/div&gt;
+```
+
+---
+class:middle, center, inverse
+
+# Tidying data
+
+---
+
+## Tidy data
+
+&lt;div style="display:flex;align-items:center;font-size:30pt;font-family:'Roboto Slab';width:100%;height:300px;background-color:wheat;text-align:center;padding-left: 50px; padding-right: 0px;border: 1px solid red; position: relative;"&gt;
+
+Tidy datasets are all alike, &lt;br/&gt;
+but every messy data is messy in its own way
+
+&lt;/div&gt;
+
+---
+
+## Tidy data
+
+Tidy data is a **computer-friendly** format based on the following characteristics:
+
+- Each row is one observation
+- Each column is one variable
+- Each set of observational unit forms a table
+
+All other forms of data can be considered **messy data**.
+
+---
+
+## Let us count the ways
+
+There are many ways data can be messy. An incomplete list....
+
++ Column headers are values, not variables
++ Multiple variables are stored in a single column
++ Variables are stored in both rows and columns
++ Multiple types of observational units are saved in the same table
++ A single observational unit is stored in multiple tables
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+1. Column headers contain values
+
+Country   |   &lt; $10K    | $10-20K    | $20-50K   | $50-100K    | &gt; $100K
+----------|-------------|------------|-----------|-------------|---------
+India     |   40        |  25        |   25      |  9          |  1
+USA       |   20        |  20        |  20       | 30          |  10
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+Column headers contain values
+
+Country   |   Income  | Percentage
+----------|-----------|------------
+India     |  &lt; $10K   |  40
+USA       |  &lt; $10K   | 20
+
+This is a case of reshaping or melting 
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+Multiple variables in one column
+
+Country  | Year   | M_0-14  | F_0-14  | M_ 15-60  | F_15-60  | M_60+  | F_60+
+---------|--------|---------|---------|-----------|----------|--------|-------
+UK       |  2010  |         |         |           |          |        | 
+UK       |  2011  |         |         |           |          |        | 
+
+&lt;p&gt;
+Separating columns into different variables
+
+Country  | Year   | Gender  | Age    | Count
+---------|--------|---------|--------|-------
+
+
+
+
+---
+
+## Tidying data
+
+The typical steps are 
+
++ Transforming data from wide to tall (`pivot_longer`) and from tall to wide (`pivot_wider`)
++ Separating columns into different columns (`separate`)
++ Putting columns together into new variables (`unite`)
+
+----
+&gt;The functions `pivot_longer` and `pivot_wider` supercede the older functions `gather` and `spread`, 
+which I have used in previous iterations of this class. However, if you are familiar with `gather` and `spread`, they aren't gone and can still be used in the current **tidyr** package.
+
+---
+
+## Tidy data
+
+
+```r
+table1
+```
+
+```
+# A tibble: 6 x 4
+  country      year  cases population
+  &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+1 Afghanistan  1999    745   19987071
+2 Afghanistan  2000   2666   20595360
+3 Brazil       1999  37737  172006362
+4 Brazil       2000  80488  174504898
+5 China        1999 212258 1272915272
+6 China        2000 213766 1280428583
+```
+
+Is this tidy?
+
+---
+
+## Tidy data
+
+
+```r
+table2
+```
+
+```
+# A tibble: 12 x 4
+   country      year type            count
+   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+ 1 Afghanistan  1999 cases             745
+ 2 Afghanistan  1999 population   19987071
+ 3 Afghanistan  2000 cases            2666
+ 4 Afghanistan  2000 population   20595360
+ 5 Brazil       1999 cases           37737
+ 6 Brazil       1999 population  172006362
+ 7 Brazil       2000 cases           80488
+ 8 Brazil       2000 population  174504898
+ 9 China        1999 cases          212258
+10 China        1999 population 1272915272
+11 China        2000 cases          213766
+12 China        2000 population 1280428583
+```
+
+Is this tidy?
+
+---
+
+## Tidy data
+
+
+```r
+table3
+```
+
+```
+# A tibble: 6 x 3
+  country      year rate             
+* &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
+1 Afghanistan  1999 745/19987071     
+2 Afghanistan  2000 2666/20595360    
+3 Brazil       1999 37737/172006362  
+4 Brazil       2000 80488/174504898  
+5 China        1999 212258/1272915272
+6 China        2000 213766/1280428583
+```
+
+Is this tidy?
+
+---
+
+
+## Tidy data
+
+
+```r
+table4a # cases
+```
+
+```
+# A tibble: 3 x 3
+  country     `1999` `2000`
+* &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+1 Afghanistan    745   2666
+2 Brazil       37737  80488
+3 China       212258 213766
+```
+
+```r
+table4b # population
+```
+
+```
+# A tibble: 3 x 3
+  country         `1999`     `2000`
+* &lt;chr&gt;            &lt;int&gt;      &lt;int&gt;
+1 Afghanistan   19987071   20595360
+2 Brazil       172006362  174504898
+3 China       1272915272 1280428583
+```
+
+Are these tidy?
+
+---
+
+## Can we make datasets tidy?
+
+Sometimes. The functions in the `tidyr` package can help
+
+- `separate` is a function that can split a column into multiple columns
+    - When there are multiple variables together in a column
+    
+
+```r
+table3
+```
+
+```
+# A tibble: 6 x 3
+  country      year rate             
+* &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
+1 Afghanistan  1999 745/19987071     
+2 Afghanistan  2000 2666/20595360    
+3 Brazil       1999 37737/172006362  
+4 Brazil       2000 80488/174504898  
+5 China        1999 212258/1272915272
+6 China        2000 213766/1280428583
+```
+
+We need to separate `rate` into two variables, cases and population
+
+---
+
+
+
+## Can we make datasets tidy?
+
+
+```r
+separate(table3, col = rate, into = c("cases", "population"), 
+         sep = "/", 
+         convert = TRUE) # convert type if possible 
+```
+
+```
+# A tibble: 6 x 4
+  country      year  cases population
+  &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+1 Afghanistan  1999    745   19987071
+2 Afghanistan  2000   2666   20595360
+3 Brazil       1999  37737  172006362
+4 Brazil       2000  80488  174504898
+5 China        1999 212258 1272915272
+6 China        2000 213766 1280428583
+```
+
+&gt; I've been explicit about naming all the options. R functions can work by 
+position as well, so `separate(table3, rate, c('cases','population'), '/')` would work, but it's not very clear, is it?
+
+---
+
+## Can we make datasets tidy?
+
+
+```r
+table2
+```
+
+```
+# A tibble: 12 x 4
+   country      year type            count
+   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+ 1 Afghanistan  1999 cases             745
+ 2 Afghanistan  1999 population   19987071
+ 3 Afghanistan  2000 cases            2666
+ 4 Afghanistan  2000 population   20595360
+ 5 Brazil       1999 cases           37737
+ 6 Brazil       1999 population  172006362
+ 7 Brazil       2000 cases           80488
+ 8 Brazil       2000 population  174504898
+ 9 China        1999 cases          212258
+10 China        1999 population 1272915272
+11 China        2000 cases          213766
+12 China        2000 population 1280428583
+```
+
+Here there are observations on two variables in successive rows
+
+---
+
+## Can we make datasets tidy?
+
+We need to `spread` these rows out into different columns. This function is now called `pivot_wider`.
+
+.pull-left[
+![](../img/tidyr-spread-gather.gif)
+]
+.pull-right[
+
+```r
+pivot_wider(table2, names_from = type, values_from = count)
+```
+
+```
+# A tibble: 6 x 4
+  country      year  cases population
+  &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+1 Afghanistan  1999    745   19987071
+2 Afghanistan  2000   2666   20595360
+3 Brazil       1999  37737  172006362
+4 Brazil       2000  80488  174504898
+5 China        1999 212258 1272915272
+6 China        2000 213766 1280428583
+```
+]
+
+---
+
+## Can we make datasets tidy?
+
+
+```r
+table4a
+```
+
+```
+# A tibble: 3 x 3
+  country     `1999` `2000`
+* &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+1 Afghanistan    745   2666
+2 Brazil       37737  80488
+3 China       212258 213766
+```
+
+Here, the variable for year is stored as a header, not as data in a cell.
+
+We need to `gather` that data and put it into a column. This function is now called `pivot_longer`
+
+---
+
+## Can we make datasets tidy?
+
+.pull-left[
+![](../img/tidyr-spread-gather.gif)
+]
+
+.pull-right[
+
+```r
+pivot_longer(table4a, names_to = 'year', values_to  = 'cases', 
+    cols = c(`1999`, `2000`))
+```
+
+```
+# A tibble: 6 x 3
+  country     year   cases
+  &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+1 Afghanistan 1999     745
+2 Afghanistan 2000    2666
+3 Brazil      1999   37737
+4 Brazil      2000   80488
+5 China       1999  212258
+6 China       2000  213766
+```
+]
+
+---
+
+## Making data tidy
+
+Admittedly, `pivot_wider` and `pivot_longer` are not easy concepts, but we'll practice with them more. 
+
+1. `pivot_longer` collects multiple columns into 2, and only 2 columns
+    - One column represents the data in the column headers
+    - One column represents the values in the column
+    - All other columns are repeated to keep all the data properly associated
+1. `pivot_wider` takes two columns and makes them multiple columns
+    - The values in one column form the headers to different new columns
+    - The values in the other column represent the values in the corresponding cells
+    - The other columns are repeated to start with, but reduce repetitions to make all associated data stay together
+    
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="../js/macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLanguage": "r",
+"highlightStyle": "tomorrow-night-bright",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
