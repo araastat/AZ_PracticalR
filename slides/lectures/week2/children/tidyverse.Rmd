@@ -1,0 +1,81 @@
+
+---
+class: middle, inverse, center
+
+# The tidyverse
+
+---
+background-image: url(../img/tidyverse_celestial.png)
+background-size: contain
+
+---
+
+## What is the tidyverse?
+
+> The tidyverse is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures. -- Dr. Hadley Wickham
+
+- A human-friendly syntax and semantics to make code more understandable
+- The functions in the tidyverse often wraps harder-to-understand functions into simpler, more understandable forms
+- We're taking an opinionated choice here
+    - Covers maybe 85% of the cases you'll ever face
+    - Takes a particular viewpoint about how data _should_ be organized
+- But this makes things easier and simpler
+
+----
+The [tidyverse.org](https://www.tidyverse.org) site and the [R4DS book](https://r4ds.had.co.nz) 
+are the definitive sources for tidyverse information.  
+The packages are united in a common philosophy of how data analysis should be done.
+
+---
+background-image: url(children/tidyverse_pkgs.png)
+background-size: contain
+---
+
+## The tidyverse
+
+### Core packages
+
+<font size=5>
+.pull-left[
+```{r munging-2, echo = F, results = 'asis'}
+library(tidyverse)
+library(glue)
+tidy_pkgs <- 
+  tibble('pkgs' = c('readr', 'dplyr', 'tidyr','purrr',
+                    'ggplot2', 'forcats', 'lubridate', 'stringr')) %>% 
+  mutate(
+    descr = map_chr(pkgs, ~packageDescription(., fields='Title')))
+
+glue_data(tidy_pkgs[1:4,], 
+          "- [**{pkgs}**](http://{pkgs}.tidyverse.org): {descr}")
+```
+]
+.pull-right[
+```{r munging-3, echo = F, results = 'asis'}
+library(tidyverse)
+library(glue)
+glue_data(tidy_pkgs[5:8,], 
+          "- [**{pkgs}**](http://{pkgs}.tidyverse.org): {descr}")
+```
+]
+</font>
+
+---
+
+## The tidyverse
+
+### Resources
+
+.pull-left[
+**Cheatsheets**
+
++ [Data import](https://github.com/rstudio/cheatsheets/blob/master/data-import.pdf)
++ [Data transformation](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
++ [Manipulating categorical variables](https://github.com/rstudio/cheatsheets/blob/master/factors.pdf)
++ [Manipulating strings](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf)
++ [Manipulating dates](https://github.com/rstudio/cheatsheets/blob/master/lubridate.pdf)
+]
+.pull-right[
+[<img style="height:300px; width:224px; border: 3px solid black;" src="../../../img/r4ds.png"/>](https://r4ds.had.co.nz/)
+]
+

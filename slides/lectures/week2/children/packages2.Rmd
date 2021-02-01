@@ -10,13 +10,19 @@ get_description <- function(pkgs){
 }
 ```
 
+class: middle,center,inverse
+
+# Packages in R
+
+---
 
 ## Packages
 
+
+.center[.acid[If _functions_ are recipes, then<br> _packages_ are recipe books]]
+
 Packages are collections of functions, and sometimes data, that are usually unified for 
 a common purpose
-
-.saltinline[If _functions_ are recipes, then _packages_ are recipe books]
 
 --
 
@@ -61,7 +67,7 @@ where `dataset` is the name of the data.frame whose column names you want to cle
 .pull-left[
 ### .red[Install packages **once per computer**]
 
-Never install packages inside a R Markdown file
+> Never install packages inside a R Markdown file
 ]
 .pull-right[
 ### .orange[Activate a package **once per R session**]
@@ -112,7 +118,7 @@ Using the RStudio _Packages_ panel
 (see next slide)
 ]
 
-You can find packages using CRAN [Task Views](https://cran.r-project.org/web/views/)
+You can find packages for particular topics using CRAN [Task Views](https://cran.r-project.org/web/views/)
 
 ---
 background-image: url(../img/pkg2.png)
@@ -188,5 +194,23 @@ remotes::install_github("rstudio/rmarkdown")
   including RStudio
   
 ]
+
+---
+
+# Exercise
+
+1. Open RStudio and install the package "pacman". 
+1. Check if the "tidyverse" package is installed using functions from the "pacman" package. 
+    - First, activate the "pacman" package
+    - Then, then use the function `p_isinstalled` to see if the "tidyverse" package is already installed (you can use `?p_isinstalled` to see how to use the function)
+1. If the "tidyverse" package isn't installed, install it.
+    - Use either `install.packages` or `pacman::p_install` (can't use the latter until you complete 1. `r emo::ji('smile')`)
+
+
+```{r, echo=F}
+countdown(minutes=7)
+```
+
+
 
 

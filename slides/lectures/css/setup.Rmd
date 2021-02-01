@@ -32,7 +32,6 @@ source(here('lib/R/update_header.R'))
 
 
 
-
 ```
 
 ```{r xaringan-themer, include=FALSE}

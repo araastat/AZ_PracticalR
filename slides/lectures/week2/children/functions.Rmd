@@ -1,0 +1,318 @@
+---
+class: middle,center,inverse
+
+# Functions
+
+---
+
+## Why do we need functions?
+
+When you are typing instructions to the computer, you might find yourself repeating the same instructions (code) over and over. So you end up copying and pasting code for each repetition.
+
++ Can make a mistake copying and pasting
++ If you need to change the instructions, you need to find every instance of it **manually** and change it, and you're likely to miss one
+
+--
+
+The rule of thumb is, if you're copying the same code more than twice, write a function.
+
++ Write the instructions once (This is the [DRY principle](https://dzone.com/articles/software-design-principles-dry-and-kiss))
++ Change it in only one place, if needed
+
+```{r, include=F}
+knitr::opts_chunk$set(echo=T)
+```
+
+---
+
+## An example
+
+.pull-left[
+In this code, we need to read data from 3 different studies, and store only
+the columns corresponding to the subject ID, the study arm, the years of followup and the vital status (dead/alive). 
+
+> We're assuming that the column names are normalized, and we'll see how to do this later
+
+For each study data file, we are doing the following common operations:
+
+1. Read data from a CSV file
+1. Extract the columns we need, and save the extracted data for use
+1. Print that we've read the data
+1. Compute the number of observations in the data
+1. Print out the number of observations
+]
+.pull-right[
+```{r, eval=F, echo = T}
+# Reading multiple data files and processing them
+
+data1 <- read.csv("study1.csv")
+data1_use <- data1[,c("ID", "Arm", 
+                      "Years_of_followup", "Vital_status")]
+print("Read data")
+N <- nrow(data1_use)
+print(paste("Number of observations =", N))
+
+data2 <- read.csv("study2.csv")
+data2_use <- data2[,c("ID", "Arm", 
+                      "Years_of_followup", "Vital_status")]
+print("Read data")
+N <- nrow(data2_use)
+print(paste("Number of observations =", N))
+
+data3 <- read.csv("study3.csv")
+data3_use <- data3[,c("ID", "Arm", 
+                      "Years_of_followup", "Vital_status")]
+print("Read data")
+N <- nrow(data3_use)
+print(paste("Number of observations =", N))
+
+
+```
+]
+
+---
+## Defining functions
+
+The basic syntax of a function is 
+
+```
+<function name> <- function(<input argument(s)>){
+  <code for instructions>
+  ...
+  <more code>
+  return(<optional output object>)
+}
+```
+
+A function is a .heatinline[recipe] that takes some inputs (raw materials), 
+does something to them, and the (optionally) return a new object. We'll write some .saltinline[pseudocode] below:
+
+.pull-left[
+```{r, eval=F, echo=T}
+bake_bread <- function(flour, yeast, water, salt, oven){
+  Mix flour, yeast, water and salt
+  Let dough rise 4 hours in warm place
+  Knead dough
+  Preheat oven to 450F with dutch oven inside
+  Put dough into dutch oven, cover
+  Bake 30 minutes
+  return(bread)
+}
+```
+]
+.pull-right[
+```{r, eval=F, echo=T}
+read_data <- function(data_file){
+  read the data using read.csv
+  create new data.frame with specified colums
+  print message
+  compute number of observations in data.frame
+  print number of observations
+  return(data_for_use)
+}
+```
+]
+
+
+---
+
+## Writing the function
+
+.pull-left[
+
+.saltinline[Pseudocode]
+
+```{r, eval=F, echo=T}
+read_data <- function(data_file){
+  read the data using read.csv
+  create new data.frame with specified colums
+  print message
+  compute number of observations in data.frame
+  print number of observations
+  return(data_for_use)
+}
+```
+]
+.pull-right[
+
+.heatinline[R code]
+
+```{r}
+read_data <- function(data_file){
+  data <- read.csv(data_file)
+  data_use <- data[,c("ID","Arm","Years_of_followup", "Vital_status")]
+  print('Read data')
+  N <- nrow(data_use)
+  print(paste('Number of observations =', N))
+  return(data_use)
+}
+```
+]
+
+Use this function: 
+
+```{r, echo=T, eval=F}
+data1_use <- read_data('study1.csv')
+data2_use <- read_data('study2.csv')
+data3_use <- read_data('study3.csv')
+```
+
+---
+
+## The concept of local vs global variables
+
+This concept is central to how to think about functions and how they work. 
+
+Any object created within the function is **local** to the function, and does not affect the global environment (what's recorded in the Environment pane)
+
+> However, you can call an object that's in the global environment from inside a function. This can create problems about the provenance of objects. So best practice is to **only use existing objects as explicit inputs to the function** rather than just calling them from inside the function.
+
+.pull-left[
+```{r}
+f <- function(x){
+  x <- 5
+  print(x)
+}
+
+```
+
+This behavior allows us to create objects in a function with the same name as 
+an object that might already exist, and not run into issues like over-writing or destroying objects
+]
+.pull-right[
+```{r}
+x <-  10
+
+f(x)
+
+print(x)
+```
+
+]
+
+---
+class: middle,center,inverse
+
+# Loops   
+
+---
+
+## for-loops
+
+The for-loop is a construct to repeat the same operation over a list of values.
+
+.pull-left[
+
+Basic syntax:
+
+```
+for(<variable> in <list>){
+    <code>
+    ...
+    <more code>
+}
+```
+
+We can use for-loops in conjunction with functions to read our study data sets
+]
+.pull-right[
+![](https://media.giphy.com/media/3o6nURRboKQJrBGVC8/giphy.gif)
+
+]
+
+---
+
+## for-loops
+
+When using loops to read or process multiple objects, it's strategically simpler
+to store the objects in a **list**
+
+```{r, eval=F, echo=T}
+study_files <- c('study1.csv','study2.csv', 'study3.csv')
+data_use <- list() # Initialize an empty list
+
+for(i in 1:length(study_files)){
+  data_use[[i]] <- read_data(study_files[i]) # Note [[]] vs []
+}
+```
+
+--
+
+- Here I'm using an integer as the looping variable
+- You can also index the loop using the actual objects in the file list
+
+```{r, eval=F, echo=TRUE}
+for(n in study_files){
+  data_use[[n]] <- read_data(n)
+}
+```
+
+Let's see what the differences are in these approaches
+
+---
+
+## for-loops
+
+.pull-left[
+```{r, results='hide'}
+study_files <- c('study1.csv','study2.csv','study3.csv')
+data_use <- list()
+
+for(i in 1:length(study_files)){
+  data_use[[i]] <- read_data(study_files[i])
+}
+```
+```{r}
+str(data_use)
+```
+
+]
+.pull-right[
+```{r, results='hide'}
+study_files <- c('study1.csv','study2.csv','study3.csv')
+data_use2 <- list()
+
+for(n in study_files){
+  data_use2[[n]] <- read_data(n)
+}
+```
+```{r}
+str(data_use2)
+```
+
+]
+---
+
+## for-loops
+
+.pull-left[
+```{r, error=FALSE}
+head(data_use[[1]])
+head(data_use[['study1.csv']])
+```
+
+]
+.pull-right[
+```{r}
+head(data_use2[[1]])
+head(data_use2[['study1.csv']])
+```
+
+]   
+
+---
+
+## for-loops
+
+The Teams Files area has three files `study1.csv`, `study2.csv`, and `study3.csv`
+
+1. Save these files into your RStudio Project in the top-level folder
+1. Load these files into R using a for-loop. Just load the files as-is without any data manipulation into a list in R
+
+
+```{r, echo=F}
+library(countdown)
+countdown(minutes=5)
+```
+
+  

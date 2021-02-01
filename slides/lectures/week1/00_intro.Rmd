@@ -728,7 +728,7 @@ class: middle,center,inverse
 
 ---
 
-```{r, child='children/functions.Rmd'}
+```{r, eval=F, child='children/functions.Rmd'}
 
 ```
 
@@ -754,7 +754,7 @@ class: middle,center,inverse
 
 ---
 
-```{r, child='children/packages2.Rmd'}
+```{r, eval=F, child='children/packages2.Rmd'}
 
 ```
 

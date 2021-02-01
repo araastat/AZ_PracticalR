@@ -1,0 +1,11 @@
+ID,Arm,Age,Gender,Years_of_followup,Vital_status
+1,SOC,61.796468457655756,Female,12.5,Alive
+2,Treatment,50.54625889491318,Male,14.6,Alive
+3,Treatment,56.927616551953754,Female,10.6,Alive
+4,SOC,56.18292727204,Male,15.8,Alive
+5,SOC,54.02804615600789,Female,10.2,Alive
+6,Treatment,56.414576871737935,Female,9.6,Dead
+7,Treatment,66.36137063040094,Female,11.2,Alive
+8,SOC,64.69917661500901,Female,8.4,Alive
+9,Treatment,61.090867956393254,Female,10.3,Alive
+10,SOC,58.68194506009376,Female,12.8,Dead
