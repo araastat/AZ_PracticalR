@@ -20,6 +20,7 @@ docs/slides_top/*
 docs/toplevel/*
 #docs/slides/lectures/week*/img/*
 
+slides/lectures/**/*.pdf
 slides/lectures/data/*
 slides/lectures/img/*
 slides/**/*cache/*
