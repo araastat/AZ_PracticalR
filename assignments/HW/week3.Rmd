@@ -1,7 +1,9 @@
 ---
 title: "Homework 3"
 author: "Practical R"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r HW2-1, include = F}
@@ -23,33 +25,26 @@ knitr::opts_chunk$set(echo = FALSE, error = FALSE, warning = FALSE, message = F,
 
 If you look in Resources, you'll see links to the complete books: R for Data Science (R4DS) and Data Visualization: A Practical Introduction (DV)
 
-## Instructions
-
-## A touch of R basics
 
 #### Question 1 
 
-You need to import the gapminder data into R. It is available as a package called **gapminder** that you will need to install on you r computer and activate in your session.
+Read the data from the file `gapminder_w.csv`. This file is not in tidy format
 
-```{r HW2-2, echo=T, eval=F}
-## Fill in the blanks
-install.packages("______")
-library(_______)
-
-```
-
-Just for conveniece, we will save the gapminder dataset as `gapm`
-
-```{r HW2-3, eval = T, echo = T}
-gapm <- gapminder::gapminder
-```
+a. Identify how to make this data tidy. Sketch this out
+b. Use `pivot_longer` and `pivot_wider` in the appropriate order to make this data tidy
+c. Save the tidy version of this data set as `gapm`
+d. Read the data from the file `gapminder.csv`. This should exactly match the data from part c. If you get stuck here, load the data from `gapminder.csv` as `gapm`.
 
 
 ## Visualizing the gapminder dataset
 
-#### Question 2 (20 points)
+#### Question 2 
 
 Let's look at population growth over time. 
+```{r, include=F}
+library(gapminder)
+gapm <- gapminder
+```
 
 ```{r HW2-4, echo = TRUE, error = T}
 ggplot(data = gapm,
@@ -113,7 +108,7 @@ ggplot(data = gapm,
   ggtitle('Population change around the world, 1957-2007')
 ```
 
-#### Question 3 (20 points)
+#### Question 3
 
 Now, let's look at the relationship between per capita GDP of a country and
 the life expectancy in the country in the gapminder dataset. The final visualization will mimic (with more limited data) a famous visualization that was shown in the Hans Rosling video *[The Joy of Stats](https://www.youtube.com/watch?v=jbkSRLYSojo)*  
