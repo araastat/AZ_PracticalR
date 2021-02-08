@@ -29,7 +29,7 @@ class: middle,center,inverse
 
 ## Plan
 
-```{r, results='asis', echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F,out.width="70%"}
 library(lubridate)
 library(gt)
 start_date = as_date('2021-01-25')
@@ -46,7 +46,9 @@ outline <- tibble(Title = c(
          Date = format(class_dates, '%d %b')) %>% 
   select(Date, everything())
 
-gt(outline)
+gt(outline) %>% 
+  gtsave('contents.png')
+# knitr::include_graphics('contents.png')
 ```
 
 
