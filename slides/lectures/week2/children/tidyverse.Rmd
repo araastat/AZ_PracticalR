@@ -27,7 +27,7 @@ are the definitive sources for tidyverse information.
 The packages are united in a common philosophy of how data analysis should be done.
 
 ---
-background-image: url(children/tidyverse_pkgs.png)
+background-image: url(../img/tidyverse_pkgs.png)
 background-size: contain
 ---
 

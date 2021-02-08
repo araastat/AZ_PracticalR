@@ -21,7 +21,7 @@ div.my-header span{
 ```{r setup, include=FALSE, message=FALSE, warning = FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = F, warning=FALSE, 
                       comment = "", cache = FALSE)
-options(htmltools.preserve.raw=FALSE)
+options(htmltools.preserve.raw = FALSE)
 library(pacman)
 p_load(char = c('tidyverse', 'here', 'janitor', 'fs', 
                 'readxl', 'flipbookr', 'broom', 'tableone',
