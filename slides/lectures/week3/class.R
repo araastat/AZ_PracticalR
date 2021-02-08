@@ -35,4 +35,14 @@ ggplot(
     x = temperature,
     y = rainfall
   )) +
-  geom_point()
+  geom_point(
+    mapping = aes(color = season_name),
+    size = 4,
+    show.legend=FALSE
+  ) +
+  facet_wrap(~ season_name) +
+  theme_classic() +
+  labs(x = 'Temperature (C)',
+       y = 'Rainfall (mm)',
+       title = 'Sydney weather by season',
+       subtitle = 'Data from 2013 to 2018',)
