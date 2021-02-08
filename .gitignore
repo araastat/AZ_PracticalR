@@ -3,8 +3,8 @@
 .RData
 .Ruserdata
 
-renv/*
 img/*
+renv/*
 docs/renv/*
 docs/renv.lock
 _site1.yml
@@ -18,7 +18,7 @@ docs/lib/*
 docs/**/*cache
 docs/slides_top/*
 docs/toplevel/*
-docs/slides/lectures/week*/img/*
+#docs/slides/lectures/week*/img/*
 
 slides/lectures/data/*
 slides/lectures/img/*

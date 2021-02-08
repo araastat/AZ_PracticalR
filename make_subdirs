@@ -1,5 +1,6 @@
 OUTDIR = $(shell Rscript -e "cat(fs::path(here::here('docs', fs::path_rel(getwd(), start=here::here()))))")
 SLIDES := $(wildcard *.Rmd)
+SLIDES_CHILDREN = $(wildcard children/*.Rmd)
 SLIDES_OUT = $(patsubst %.Rmd, $(OUTDIR)/%.html, $(SLIDES))
 SLIDES_PDF = $(patsubst %.Rmd, $(OUTDIR)/%.pdf, $(SLIDES))
 
@@ -8,7 +9,7 @@ all: $(SLIDES_OUT)
 .PHONY: pdf
 pdf: $(SLIDES_PDF)
 
-$(OUTDIR)/%.html: %.Rmd _output.yml ../css/setup.Rmd
+$(OUTDIR)/%.html: %.Rmd _output.yml ../css/setup.Rmd $(SLIDES_CHILDREN)
 	Rscript -e "rmarkdown::render('$(*F).Rmd', output_yaml = '_output.yml')"
 	rm -rf $(OUTDIR)/$(*F)_files
 	mv $(*F).html $(OUTDIR)
