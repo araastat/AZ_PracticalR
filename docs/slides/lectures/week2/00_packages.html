@@ -448,12 +448,9 @@ The Teams Files area has three files `study1.csv`, `study2.csv`, and `study3.csv
 1. Load these files into R using a for-loop. Just load the files as-is without any data manipulation into a list in R
 
 
-
-```{=html}
-&lt;div class="countdown" id="timer_6018035d" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020f309" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
   
 
@@ -670,12 +667,9 @@ remotes::install_github("rstudio/rmarkdown")
     - Use either `install.packages` or `pacman::p_install` (can't use the latter until you complete 1. 😄)
 
 
-
-```{=html}
-&lt;div class="countdown" id="timer_60180400" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;07&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020f144" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">07</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 
 
@@ -711,7 +705,7 @@ are the definitive sources for tidyverse information.
 The packages are united in a common philosophy of how data analysis should be done.
 
 ---
-background-image: url(children/tidyverse_pkgs.png)
+background-image: url(../img/tidyverse_pkgs.png)
 background-size: contain
 ---
 
@@ -832,30 +826,48 @@ There are of course many other data formats that might need to be read. R provid
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Type &lt;/th&gt;
    &lt;th style="text-align:left;"&gt; Function &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Reads &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Package &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Notes &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; read_csv() &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Comma separated values &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; read_csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; readr &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Takes care of formatting &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; read_csv2() &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Semi-colon separated values &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; read.csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; base &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Built in &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; read_delim() &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; General delimited files &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; csv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; fread &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; data.table &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Fastest &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; read_fwf() &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Fixed width files &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Excel &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; read_excel &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; readxl &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; read_tsv() &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Tab delimited values &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; sas7bdat &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; read_sas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; haven &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SAS format &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; json &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; read_json &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; jsonlite &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; JSON format &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -873,12 +885,9 @@ We will use the following files for examples in this section
 
 Take a couple of minutes and download these files into your RStudio Project
 
-
-```{=html}
-&lt;div class="countdown" id="timer_60180467" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;03&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020f28a" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 &gt; Note where you store the data files within your project. Your path will not be the same as mine, since I probably have a different directory structure than you
 
@@ -1520,12 +1529,9 @@ new_data &lt;- select(old_data, 1:4)
 1. Create a second dataset from `brca_expression` that contains the column 'TCGA_ID' and columns starting with "NP_00200".
 1. Take this last dataset and convert it's column names to lower case using `janitor::clean_names`
 
-
-```{=html}
-&lt;div class="countdown" id="timer_6018037c" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;10&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020f1ad" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 
 ---
@@ -1653,12 +1659,9 @@ The `across` concept is quite powerful. We'll explore it a bit more using the **
 1. Display the first few rows of the data using `head()`
 1. You'll notice that there are missing values in some columns. Let's replace these with the column means.
 
-
-```{=html}
-&lt;div class="countdown" id="timer_601805cf" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;10&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020f1c4" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 ---
 
@@ -1912,12 +1915,9 @@ You can use `slice` and siblings to subset **rows** of a data set by index.
 1. Extract the rows from `penguins` with the smallest 10% of penguins by mass
 1. Extract a random 20% of rows from `penguins`
 
-
-```{=html}
-&lt;div class="countdown" id="timer_60180652" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020f20d" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 
 ---
@@ -1991,12 +1991,9 @@ The important things to note here are:
 &lt;/ol&gt;
 &lt;/ol&gt;
     
-
-```{=html}
-&lt;div class="countdown" id="timer_60180497" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020f2c8" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 ---
 class:middle, center, inverse

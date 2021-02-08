@@ -54,7 +54,7 @@ b <- tribble(
   'sas7bdat','read_sas', 'haven','SAS format',
   'json', 'read_json', 'jsonlite', 'JSON format'
 )
-knitr::kable(d, format='html')
+knitr::kable(b, format='html')
 ```
 
 ---
