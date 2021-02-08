@@ -1,0 +1,240 @@
+
+---
+class:middle, center, inverse
+
+# Tidying data
+
+---
+
+## Tidy data
+
+<div style="display:flex;align-items:center;font-size:30pt;font-family:'Roboto Slab';width:100%;height:300px;background-color:wheat;text-align:center;padding-left: 50px; padding-right: 0px;border: 1px solid red; position: relative;">
+
+Tidy datasets are all alike, <br/>
+but every messy data is messy in its own way
+
+</div>
+
+---
+
+## Tidy data
+
+Tidy data is a **computer-friendly** format based on the following characteristics:
+
+- Each row is one observation
+- Each column is one variable
+- Each set of observational unit forms a table
+
+All other forms of data can be considered **messy data**.
+
+---
+
+## Let us count the ways
+
+There are many ways data can be messy. An incomplete list....
+
++ Column headers are values, not variables
++ Multiple variables are stored in a single column
++ Variables are stored in both rows and columns
++ Multiple types of observational units are saved in the same table
++ A single observational unit is stored in multiple tables
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+1. Column headers contain values
+
+Country   |   < $10K    | $10-20K    | $20-50K   | $50-100K    | > $100K
+----------|-------------|------------|-----------|-------------|---------
+India     |   40        |  25        |   25      |  9          |  1
+USA       |   20        |  20        |  20       | 30          |  10
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+Column headers contain values
+
+Country   |   Income  | Percentage
+----------|-----------|------------
+India     |  < $10K   |  40
+USA       |  < $10K   | 20
+
+This is a case of reshaping or melting 
+
+---
+
+## Ways to have messy (i.e. not tidy) data
+
+Multiple variables in one column
+
+Country  | Year   | M_0-14  | F_0-14  | M_ 15-60  | F_15-60  | M_60+  | F_60+
+---------|--------|---------|---------|-----------|----------|--------|-------
+UK       |  2010  |         |         |           |          |        | 
+UK       |  2011  |         |         |           |          |        | 
+
+<p>
+Separating columns into different variables
+
+Country  | Year   | Gender  | Age    | Count
+---------|--------|---------|--------|-------
+
+
+
+
+---
+
+## Tidying data
+
+The typical steps are 
+
++ Transforming data from wide to tall (`pivot_longer`) and from tall to wide (`pivot_wider`)
++ Separating columns into different columns (`separate`)
++ Putting columns together into new variables (`unite`)
+
+----
+>The functions `pivot_longer` and `pivot_wider` supercede the older functions `gather` and `spread`, 
+which I have used in previous iterations of this class. However, if you are familiar with `gather` and `spread`, they aren't gone and can still be used in the current **tidyr** package.
+
+---
+
+## Tidy data
+
+```{r }
+table1
+```
+
+Is this tidy?
+
+---
+
+## Tidy data
+
+```{r }
+table2
+```
+
+Is this tidy?
+
+---
+
+## Tidy data
+
+```{r }
+table3
+```
+
+Is this tidy?
+
+---
+
+
+## Tidy data
+
+```{r }
+table4a # cases
+table4b # population
+```
+
+Are these tidy?
+
+---
+
+## Can we make datasets tidy?
+
+Sometimes. The functions in the `tidyr` package can help
+
+- `separate` is a function that can split a column into multiple columns
+    - When there are multiple variables together in a column
+    
+```{r }
+table3
+```
+
+We need to separate `rate` into two variables, cases and population
+
+---
+
+
+
+## Can we make datasets tidy?
+
+```{r }
+separate(table3, col = rate, into = c("cases", "population"), 
+         sep = "/", 
+         convert = TRUE) # convert type if possible 
+```
+
+> I've been explicit about naming all the options. R functions can work by 
+position as well, so `separate(table3, rate, c('cases','population'), '/')` would work, but it's not very clear, is it?
+
+---
+
+## Can we make datasets tidy?
+
+```{r }
+table2
+```
+
+Here there are observations on two variables in successive rows
+
+---
+
+## Can we make datasets tidy?
+
+We need to `spread` these rows out into different columns. This function is now called `pivot_wider`.
+
+.pull-left[
+![](../img/tidyr-spread-gather.gif)
+]
+.pull-right[
+```{r }
+pivot_wider(table2, names_from = type, values_from = count)
+```
+]
+
+---
+
+## Can we make datasets tidy?
+
+```{r }
+table4a
+```
+
+Here, the variable for year is stored as a header, not as data in a cell.
+
+We need to `gather` that data and put it into a column. This function is now called `pivot_longer`
+
+---
+
+## Can we make datasets tidy?
+
+.pull-left[
+![](../img/tidyr-spread-gather.gif)
+]
+
+.pull-right[
+```{r }
+pivot_longer(table4a, names_to = 'year', values_to  = 'cases', 
+    cols = c(`1999`, `2000`))
+```
+]
+
+---
+
+## Making data tidy
+
+Admittedly, `pivot_wider` and `pivot_longer` are not easy concepts, but we'll practice with them more. 
+
+1. `pivot_longer` collects multiple columns into 2, and only 2 columns
+    - One column represents the data in the column headers
+    - One column represents the values in the column
+    - All other columns are repeated to keep all the data properly associated
+1. `pivot_wider` takes two columns and makes them multiple columns
+    - The values in one column form the headers to different new columns
+    - The values in the other column represent the values in the corresponding cells
+    - The other columns are repeated to start with, but reduce repetitions to make all associated data stay together
+    
+
+

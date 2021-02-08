@@ -448,7 +448,7 @@ The Teams Files area has three files `study1.csv`, `study2.csv`, and `study3.csv
 1. Load these files into R using a for-loop. Just load the files as-is without any data manipulation into a list in R
 
 
-<div class="countdown" id="timer_6020f64a" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6020f879" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -667,7 +667,7 @@ remotes::install_github("rstudio/rmarkdown")
     - Use either `install.packages` or `pacman::p_install` (can't use the latter until you complete 1. 😄)
 
 
-<div class="countdown" id="timer_6020f442" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6020fad0" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">07</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -885,7 +885,7 @@ We will use the following files for examples in this section
 
 Take a couple of minutes and download these files into your RStudio Project
 
-<div class="countdown" id="timer_6020f54f" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6020f92c" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -1529,7 +1529,7 @@ new_data &lt;- select(old_data, 1:4)
 1. Create a second dataset from `brca_expression` that contains the column 'TCGA_ID' and columns starting with "NP_00200".
 1. Take this last dataset and convert it's column names to lower case using `janitor::clean_names`
 
-<div class="countdown" id="timer_6020f4fc" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6020f89c" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -1659,7 +1659,7 @@ The `across` concept is quite powerful. We'll explore it a bit more using the **
 1. Display the first few rows of the data using `head()`
 1. You'll notice that there are missing values in some columns. Let's replace these with the column means.
 
-<div class="countdown" id="timer_6020f57e" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6020fa22" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -1915,7 +1915,7 @@ You can use `slice` and siblings to subset **rows** of a data set by index.
 1. Extract the rows from `penguins` with the smallest 10% of penguins by mass
 1. Extract a random 20% of rows from `penguins`
 
-<div class="countdown" id="timer_6020f40b" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6020f8f3" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -1991,397 +1991,9 @@ The important things to note here are:
 &lt;/ol&gt;
 &lt;/ol&gt;
     
-<div class="countdown" id="timer_6020f5dc" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_6020f82c" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
-
----
-class:middle, center, inverse
-
-# Tidying data
-
----
-
-## Tidy data
-
-&lt;div style="display:flex;align-items:center;font-size:30pt;font-family:'Roboto Slab';width:100%;height:300px;background-color:wheat;text-align:center;padding-left: 50px; padding-right: 0px;border: 1px solid red; position: relative;"&gt;
-
-Tidy datasets are all alike, &lt;br/&gt;
-but every messy data is messy in its own way
-
-&lt;/div&gt;
-
----
-
-## Tidy data
-
-Tidy data is a **computer-friendly** format based on the following characteristics:
-
-- Each row is one observation
-- Each column is one variable
-- Each set of observational unit forms a table
-
-All other forms of data can be considered **messy data**.
-
----
-
-## Let us count the ways
-
-There are many ways data can be messy. An incomplete list....
-
-+ Column headers are values, not variables
-+ Multiple variables are stored in a single column
-+ Variables are stored in both rows and columns
-+ Multiple types of observational units are saved in the same table
-+ A single observational unit is stored in multiple tables
-
----
-
-## Ways to have messy (i.e. not tidy) data
-
-1. Column headers contain values
-
-Country   |   &lt; $10K    | $10-20K    | $20-50K   | $50-100K    | &gt; $100K
-----------|-------------|------------|-----------|-------------|---------
-India     |   40        |  25        |   25      |  9          |  1
-USA       |   20        |  20        |  20       | 30          |  10
-
----
-
-## Ways to have messy (i.e. not tidy) data
-
-Column headers contain values
-
-Country   |   Income  | Percentage
-----------|-----------|------------
-India     |  &lt; $10K   |  40
-USA       |  &lt; $10K   | 20
-
-This is a case of reshaping or melting 
-
----
-
-## Ways to have messy (i.e. not tidy) data
-
-Multiple variables in one column
-
-Country  | Year   | M_0-14  | F_0-14  | M_ 15-60  | F_15-60  | M_60+  | F_60+
----------|--------|---------|---------|-----------|----------|--------|-------
-UK       |  2010  |         |         |           |          |        | 
-UK       |  2011  |         |         |           |          |        | 
-
-&lt;p&gt;
-Separating columns into different variables
-
-Country  | Year   | Gender  | Age    | Count
----------|--------|---------|--------|-------
-
-
-
-
----
-
-## Tidying data
-
-The typical steps are 
-
-+ Transforming data from wide to tall (`pivot_longer`) and from tall to wide (`pivot_wider`)
-+ Separating columns into different columns (`separate`)
-+ Putting columns together into new variables (`unite`)
-
-----
-&gt;The functions `pivot_longer` and `pivot_wider` supercede the older functions `gather` and `spread`, 
-which I have used in previous iterations of this class. However, if you are familiar with `gather` and `spread`, they aren't gone and can still be used in the current **tidyr** package.
-
----
-
-## Tidy data
-
-
-```r
-table1
-```
-
-```
-# A tibble: 6 x 4
-  country      year  cases population
-  &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
-1 Afghanistan  1999    745   19987071
-2 Afghanistan  2000   2666   20595360
-3 Brazil       1999  37737  172006362
-4 Brazil       2000  80488  174504898
-5 China        1999 212258 1272915272
-6 China        2000 213766 1280428583
-```
-
-Is this tidy?
-
----
-
-## Tidy data
-
-
-```r
-table2
-```
-
-```
-# A tibble: 12 x 4
-   country      year type            count
-   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
- 1 Afghanistan  1999 cases             745
- 2 Afghanistan  1999 population   19987071
- 3 Afghanistan  2000 cases            2666
- 4 Afghanistan  2000 population   20595360
- 5 Brazil       1999 cases           37737
- 6 Brazil       1999 population  172006362
- 7 Brazil       2000 cases           80488
- 8 Brazil       2000 population  174504898
- 9 China        1999 cases          212258
-10 China        1999 population 1272915272
-11 China        2000 cases          213766
-12 China        2000 population 1280428583
-```
-
-Is this tidy?
-
----
-
-## Tidy data
-
-
-```r
-table3
-```
-
-```
-# A tibble: 6 x 3
-  country      year rate             
-* &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
-1 Afghanistan  1999 745/19987071     
-2 Afghanistan  2000 2666/20595360    
-3 Brazil       1999 37737/172006362  
-4 Brazil       2000 80488/174504898  
-5 China        1999 212258/1272915272
-6 China        2000 213766/1280428583
-```
-
-Is this tidy?
-
----
-
-
-## Tidy data
-
-
-```r
-table4a # cases
-```
-
-```
-# A tibble: 3 x 3
-  country     `1999` `2000`
-* &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
-1 Afghanistan    745   2666
-2 Brazil       37737  80488
-3 China       212258 213766
-```
-
-```r
-table4b # population
-```
-
-```
-# A tibble: 3 x 3
-  country         `1999`     `2000`
-* &lt;chr&gt;            &lt;int&gt;      &lt;int&gt;
-1 Afghanistan   19987071   20595360
-2 Brazil       172006362  174504898
-3 China       1272915272 1280428583
-```
-
-Are these tidy?
-
----
-
-## Can we make datasets tidy?
-
-Sometimes. The functions in the `tidyr` package can help
-
-- `separate` is a function that can split a column into multiple columns
-    - When there are multiple variables together in a column
-    
-
-```r
-table3
-```
-
-```
-# A tibble: 6 x 3
-  country      year rate             
-* &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
-1 Afghanistan  1999 745/19987071     
-2 Afghanistan  2000 2666/20595360    
-3 Brazil       1999 37737/172006362  
-4 Brazil       2000 80488/174504898  
-5 China        1999 212258/1272915272
-6 China        2000 213766/1280428583
-```
-
-We need to separate `rate` into two variables, cases and population
-
----
-
-
-
-## Can we make datasets tidy?
-
-
-```r
-separate(table3, col = rate, into = c("cases", "population"), 
-         sep = "/", 
-         convert = TRUE) # convert type if possible 
-```
-
-```
-# A tibble: 6 x 4
-  country      year  cases population
-  &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
-1 Afghanistan  1999    745   19987071
-2 Afghanistan  2000   2666   20595360
-3 Brazil       1999  37737  172006362
-4 Brazil       2000  80488  174504898
-5 China        1999 212258 1272915272
-6 China        2000 213766 1280428583
-```
-
-&gt; I've been explicit about naming all the options. R functions can work by 
-position as well, so `separate(table3, rate, c('cases','population'), '/')` would work, but it's not very clear, is it?
-
----
-
-## Can we make datasets tidy?
-
-
-```r
-table2
-```
-
-```
-# A tibble: 12 x 4
-   country      year type            count
-   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
- 1 Afghanistan  1999 cases             745
- 2 Afghanistan  1999 population   19987071
- 3 Afghanistan  2000 cases            2666
- 4 Afghanistan  2000 population   20595360
- 5 Brazil       1999 cases           37737
- 6 Brazil       1999 population  172006362
- 7 Brazil       2000 cases           80488
- 8 Brazil       2000 population  174504898
- 9 China        1999 cases          212258
-10 China        1999 population 1272915272
-11 China        2000 cases          213766
-12 China        2000 population 1280428583
-```
-
-Here there are observations on two variables in successive rows
-
----
-
-## Can we make datasets tidy?
-
-We need to `spread` these rows out into different columns. This function is now called `pivot_wider`.
-
-.pull-left[
-![](../img/tidyr-spread-gather.gif)
-]
-.pull-right[
-
-```r
-pivot_wider(table2, names_from = type, values_from = count)
-```
-
-```
-# A tibble: 6 x 4
-  country      year  cases population
-  &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
-1 Afghanistan  1999    745   19987071
-2 Afghanistan  2000   2666   20595360
-3 Brazil       1999  37737  172006362
-4 Brazil       2000  80488  174504898
-5 China        1999 212258 1272915272
-6 China        2000 213766 1280428583
-```
-]
-
----
-
-## Can we make datasets tidy?
-
-
-```r
-table4a
-```
-
-```
-# A tibble: 3 x 3
-  country     `1999` `2000`
-* &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
-1 Afghanistan    745   2666
-2 Brazil       37737  80488
-3 China       212258 213766
-```
-
-Here, the variable for year is stored as a header, not as data in a cell.
-
-We need to `gather` that data and put it into a column. This function is now called `pivot_longer`
-
----
-
-## Can we make datasets tidy?
-
-.pull-left[
-![](../img/tidyr-spread-gather.gif)
-]
-
-.pull-right[
-
-```r
-pivot_longer(table4a, names_to = 'year', values_to  = 'cases', 
-    cols = c(`1999`, `2000`))
-```
-
-```
-# A tibble: 6 x 3
-  country     year   cases
-  &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
-1 Afghanistan 1999     745
-2 Afghanistan 2000    2666
-3 Brazil      1999   37737
-4 Brazil      2000   80488
-5 China       1999  212258
-6 China       2000  213766
-```
-]
-
----
-
-## Making data tidy
-
-Admittedly, `pivot_wider` and `pivot_longer` are not easy concepts, but we'll practice with them more. 
-
-1. `pivot_longer` collects multiple columns into 2, and only 2 columns
-    - One column represents the data in the column headers
-    - One column represents the values in the column
-    - All other columns are repeated to keep all the data properly associated
-1. `pivot_wider` takes two columns and makes them multiple columns
-    - The values in one column form the headers to different new columns
-    - The values in the other column represent the values in the corresponding cells
-    - The other columns are repeated to start with, but reduce repetitions to make all associated data stay together
-    
-
-
 
 
     </textarea>

@@ -10,10 +10,11 @@ all: $(SLIDES_OUT)
 pdf: $(SLIDES_PDF)
 
 $(OUTDIR)/%.html: %.Rmd _output.yml ../css/setup.Rmd $(SLIDES_CHILDREN)
-	Rscript -e "rmarkdown::render('$(*F).Rmd', output_yaml = '_output.yml')"
-	rm -rf $(OUTDIR)/$(*F)_files
-	mv $(*F).html $(OUTDIR)
-	mv -f $(*F)_files $(OUTDIR)
+	Rscript -e "if(!dir.exists('$(OUTDIR)')) dir.create('$(OUTDIR)')"
+	Rscript -e "rmarkdown::render('$(*F).Rmd', output_yaml = '_output.yml', output_dir='$(OUTDIR)')"
+	#rm -rf $(OUTDIR)/$(*F)_files
+	#mv $(*F).html $(OUTDIR)
+	#mv -f $(*F)_files $(OUTDIR)
 
 $(OUTDIR)/%.pdf: $(OUTDIR)/%.html
 	cp -r ../css $(OUTDIR)
