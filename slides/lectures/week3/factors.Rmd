@@ -2,25 +2,21 @@
 title: "Manipulating categorical variables"
 author: Abhijit Dasgupta, PhD
 abstract: We explore categorical variables
+output: xaringan::moon_reader
 ---
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, comment = ' ', cache=TRUE)
-setwd(here::here('slides/lectures'))
-library(tidyverse)
+```{r, include=F, child = '../css/setup.Rmd'}
+
+```
+
+```{r , include=FALSE}
 theme_set(theme_classic()+theme(axis.text = element_text(size=14),
                                 axis.title = element_text(size=16),
                                 legend.text = element_text(size=14),
                                 legend.title = element_text(size=16)))
 ```
 
-layout: true
-
-<div class="my-header">
-<span>BIOF 439: Data Visualization using R</span></div>
-
----
 class: middle,center
 
 # Categorical variables
@@ -472,31 +468,5 @@ ggplot(iris, aes(
 
 1. [forcats cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/factors.pdf)
 1. [Chapter 15](https://r4ds.had.co.nz/factors.html) of R4DS
-
-
----
-
-## Pie chart
-
-.pull-left[
-```{r pie, eval = F, echo = T}
-penguins %>% count(species) %>% 
-  ggplot(aes(x=1,y=n, fill=species))+
-    geom_bar(stat='identity')+
-    coord_polar('y') + #<<
-    theme(axis.text = element_blank(),
-          axis.title = element_blank(), 
-          axis.ticks=element_blank(), 
-          panel.grid = element_blank(),
-          axis.line = element_blank())
-```
-
-See [here](https://homepage.divms.uiowa.edu/~luke/classes/STAT4580/catone.html#pie-charts-and-doughnut-charts) and
-[here](https://www.r-graph-gallery.com/piechart-ggplot2.html) for more examples.
-]
-.pull-right[
-```{r, eval=T, echo = F, ref.label="pie"}
-```
-]
 
 

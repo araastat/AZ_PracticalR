@@ -1,0 +1,30 @@
+
+# Setup -------------------------------------------------------------------
+
+pacman::p_load(tidyverse, janitor, patchwork, ggpubr, cowplot)
+
+
+
+# Tidying -----------------------------------------------------------------
+
+table1
+table2
+table3
+table4a # cases
+table4b # population
+
+table3 %>% separate(rate, c('cases','population'), sep='/')
+table3 %>% separate(rate, c('cases','population'), sep='/', convert = TRUE)
+
+weather_dat <- read_csv(here::here('slides/lectures/data','weather.csv'))
+
+weather_dat %>%
+  pivot_longer(names_to = 'day', values_to = 'temp', cols = starts_with('d')) %>%
+  mutate(day = parse_number(day)) %>%
+  filter(!is.na(temp)) %>%
+  pivot_wider(names_from = 'element', values_from = 'temp')
+
+
+# Plots -------------------------------------------------------------------
+
+
