@@ -4,7 +4,7 @@
     <title>Practical R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Abhijit Dasgupta" />
-    <script src="00_packages_files/header-attrs-2.6/header-attrs.js"></script>
+    <script src="00_packages_files/header-attrs-2.6.6/header-attrs.js"></script>
     <link href="00_packages_files/tachyons-4.12.0/tachyons.min.css" rel="stylesheet" />
     <link href="00_packages_files/panelset-0.2.3.9000/panelset.css" rel="stylesheet" />
     <script src="00_packages_files/panelset-0.2.3.9000/panelset.js"></script>
@@ -448,12 +448,9 @@ The Teams Files area has three files `study1.csv`, `study2.csv`, and `study3.csv
 1. Load these files into R using a for-loop. Just load the files as-is without any data manipulation into a list in R
 
 
-
-```{=html}
-&lt;div class="countdown" id="timer_6018035d" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020e6a8" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
   
 
@@ -670,12 +667,9 @@ remotes::install_github("rstudio/rmarkdown")
     - Use either `install.packages` or `pacman::p_install` (can't use the latter until you complete 1. 😄)
 
 
-
-```{=html}
-&lt;div class="countdown" id="timer_60180400" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;07&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020e5e8" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">07</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 
 
@@ -873,12 +867,9 @@ We will use the following files for examples in this section
 
 Take a couple of minutes and download these files into your RStudio Project
 
-
-```{=html}
-&lt;div class="countdown" id="timer_60180467" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;03&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020e6ef" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 &gt; Note where you store the data files within your project. Your path will not be the same as mine, since I probably have a different directory structure than you
 
@@ -902,7 +893,7 @@ str(brca_clinical)
 ```
 
 ```
-spec_tbl_df [77 × 30] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+tibble [77 × 30] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
  $ Complete TCGA ID                   : chr [1:77] "TCGA-A2-A0CM" "TCGA-BH-A18Q" "TCGA-A7-A0CE" "TCGA-D8-A142" ...
  $ Gender                             : chr [1:77] "FEMALE" "FEMALE" "FEMALE" "FEMALE" ...
  $ Age at Initial Pathologic Diagnosis: num [1:77] 40 56 57 74 61 67 45 48 59 36 ...
@@ -1520,12 +1511,9 @@ new_data &lt;- select(old_data, 1:4)
 1. Create a second dataset from `brca_expression` that contains the column 'TCGA_ID' and columns starting with "NP_00200".
 1. Take this last dataset and convert it's column names to lower case using `janitor::clean_names`
 
-
-```{=html}
-&lt;div class="countdown" id="timer_6018037c" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;10&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020e61a" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 
 ---
@@ -1653,12 +1641,9 @@ The `across` concept is quite powerful. We'll explore it a bit more using the **
 1. Display the first few rows of the data using `head()`
 1. You'll notice that there are missing values in some columns. Let's replace these with the column means.
 
-
-```{=html}
-&lt;div class="countdown" id="timer_601805cf" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;10&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020e4e8" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">10</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 ---
 
@@ -1912,12 +1897,9 @@ You can use `slice` and siblings to subset **rows** of a data set by index.
 1. Extract the rows from `penguins` with the smallest 10% of penguins by mass
 1. Extract a random 20% of rows from `penguins`
 
-
-```{=html}
-&lt;div class="countdown" id="timer_60180652" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020e476" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 
 ---
@@ -1991,12 +1973,9 @@ The important things to note here are:
 &lt;/ol&gt;
 &lt;/ol&gt;
     
-
-```{=html}
-&lt;div class="countdown" id="timer_60180497" style="right:0;bottom:0;" data-warnwhen="0"&gt;
-&lt;code class="countdown-time"&gt;&lt;span class="countdown-digits minutes"&gt;05&lt;/span&gt;&lt;span class="countdown-digits colon"&gt;:&lt;/span&gt;&lt;span class="countdown-digits seconds"&gt;00&lt;/span&gt;&lt;/code&gt;
-&lt;/div&gt;
-```
+<div class="countdown" id="timer_6020e64f" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
 
 ---
 class:middle, center, inverse
