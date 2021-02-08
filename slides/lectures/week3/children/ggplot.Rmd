@@ -605,6 +605,7 @@ ggplot(
 ```
 
 > This is looking at the distribution of enterococci concentration (x-axis) in this dataset
+
 ]
 .pull-right[
 ```{r, eval=T, echo = F, ref.label="grp1"}

@@ -27,4 +27,12 @@ weather_dat %>%
 
 # Plots -------------------------------------------------------------------
 
+beaches <- read_csv(here::here('slides/lectures/data','sydneybeaches3.csv'))
 
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )) +
+  geom_point()
