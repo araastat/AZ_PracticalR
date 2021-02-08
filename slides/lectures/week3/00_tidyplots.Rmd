@@ -13,3 +13,28 @@ date: "8 February, 2021"
 
 ```
 
+```{r,eval=T, child='children/ggplot.Rmd'}
+
+```
+
+```{r, child='children/annotate.Rmd'}
+
+```
+
+```{r, child='children/patchwork.Rmd'}
+
+```
+
+```{r, child='children/saving.Rmd'}
+
+```
+
+```{r, child='children/biomed.Rmd'}
+
+```
+
+```{r, child='children/annotations.Rmd'}
+
+```
+
+

@@ -1,0 +1,243 @@
+
+---
+
+```{r, include=F}
+datadir = here::here('slides/lectures/data')
+
+```
+
+class:middle, center, inverse
+
+# Annotations
+
+---
+
+
+
+## An example 
+
+<div id="origecon"></div>
+![](../img/economist1.gif)
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+```{r a1, eval = T, echo = T, message=F, fig.show='hide'}
+library(tidyverse)
+theme_set(theme_bw())
+econ_data <- rio::import(fs::path(datadir, 'EconomistData.csv'))
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_point()
+```
+]
+.pull-right[
+
+![](00_tidyplots_files/figure-html/a1-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+```{r a2, eval = T, echo = T, fig.show='hide'}
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_point() +
+  geom_smooth(color='red', se=F)
+```
+
+#### Add a trend line
+]
+.pull-right[
+![](../img/a2-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+```{r a3, eval = T, echo = T, message=F,fig.show='hide'}
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + #<<
+  geom_point()#<<
+```
+
+#### Reverse order so points are above line
+]
+.pull-right[
+
+![](../img/a3-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+```{r a4, eval = T, echo = T,fig.show='hide'}
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+  geom_point(shape = 1, size = 4, stroke=1.25)#<<
+
+```
+
+#### Different shape for points
+]
+.pull-right[
+![](../img/a4-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+```{r a5, eval = T, echo = T,fig.show='hide'}
+pointsToLabel <- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
+                   "Afghanistan", "Congo", "Greece", "Argentina", "Brazil",
+                   "India", "Italy", "China", "South Africa", "Spane",
+                   "Botswana", "Cape Verde", "Bhutan", "Rwanda", "France",
+                   "United States", "Germany", "Britain", "Barbados", "Norway", "Japan",
+                   "New Zealand", "Singapore")
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+  geom_point(shape = 1, size = 4, stroke=1.25) + 
+  geom_text(aes(label=Country),
+            color = 'gray20')
+```
+
+#### Label countries
+]
+.pull-right[
+![](../img/a5-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+```{r a6, eval = T, echo = T,fig.show='hide'}
+pointsToLabel <- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
+                   "Afghanistan", "Congo", "Greece", "Argentina", "Brazil",
+                   "India", "Italy", "China", "South Africa", "Spane",
+                   "Botswana", "Cape Verde", "Bhutan", "Rwanda", "France",
+                   "United States", "Germany", "Britain", "Barbados", "Norway", "Japan",
+                   "New Zealand", "Singapore")
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+  geom_point(shape = 1, size = 4, stroke=1.25) + 
+  geom_text(aes(label=Country),
+            color = 'gray20', 
+            data = econ_data %>% #<<
+              dplyr::filter(Country %in% pointsToLabel))#<<
+```
+
+#### Better, but labels are overlayed on points
+]
+.pull-right[
+![](../img/a6-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+```{r a7, eval = T, echo = T,fig.show='hide'}
+library(ggrepel) #<<
+pointsToLabel <- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
+                   "Afghanistan", "Congo", "Greece", "Argentina", "Brazil",
+                   "India", "Italy", "China", "South Africa", "Spane",
+                   "Botswana", "Cape Verde", "Bhutan", "Rwanda", "France",
+                   "United States", "Germany", "Britain", "Barbados", "Norway", "Japan",
+                   "New Zealand", "Singapore")
+(plt <- ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+  geom_point(shape = 1, size = 4, stroke=1.25) + 
+  geom_text_repel(aes(label=Country),#<<
+            color = 'gray20', 
+            force=20,
+            data = econ_data %>% 
+              dplyr::filter(Country %in% pointsToLabel)))
+```
+
+]
+.pull-right[
+![](../img/a7-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+Let's re-order the regions
+
+```{r a8, eval = T, echo = T,fig.show='hide'}
+econ_data$Region <- 
+  factor(econ_data$Region,
+         levels = c("EU W. Europe",
+                    "Americas",
+                    "Asia Pacific",
+                    "East EU Cemt Asia",
+                    "MENA",
+                    "SSA"),
+         labels = c("OECD",
+                    "Americas",
+                    "Asia../nOceania",
+                    "Central../nEastern Europe",
+                    "Middle East../nnorth Africa",
+                    "Sub-Sahar../nAfrica"))
+
+plt$data = econ_data #<<
+plt #<<
+```
+]
+.pull-right[
+![](../img/a8-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+Clean up the graphic
+```{r a9, eval = T, echo = T,fig.show='hide'}
+(plt_corrupt <- 
+   plt +
+  scale_x_continuous(name = 'Corruption Perceptions Index',
+                     breaks = 1:10) +
+  scale_y_continuous(name="Human Development Index",
+                     breaks = seq(0.2, 1, by = 0.1))+
+  scale_color_manual(name = '',
+                     values = c("#24576D",
+                                "#099DD7",
+                                "#28AADC",
+                                "#248E84",
+                                "#F2583F",
+                                "#96503F")) +
+  ggtitle("Corruption and Human development")+
+  theme_bw()+
+  theme(legend.position='top',
+        legend.direction='horizontal')
+)
+```
+]
+.pull-right[
+![](../img/a9-1.png)
+]
+
+

@@ -4,7 +4,7 @@
     <title>Practical R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Abhijit Dasgupta" />
-    <script src="00_tidyplots_files/header-attrs-2.6.6/header-attrs.js"></script>
+    <script src="00_tidyplots_files/header-attrs-2.6/header-attrs.js"></script>
     <link href="00_tidyplots_files/tachyons-4.12.0/tachyons.min.css" rel="stylesheet" />
     <link href="00_tidyplots_files/panelset-0.2.3.9000/panelset.css" rel="stylesheet" />
     <script src="00_tidyplots_files/panelset-0.2.3.9000/panelset.js"></script>
@@ -419,6 +419,3342 @@ Admittedly, `pivot_wider` and `pivot_longer` are not easy concepts, but we'll pr
     - The values in the other column represent the values in the corresponding cells
     - The other columns are repeated to start with, but reduce repetitions to make all associated data stay together
     
+
+
+
+
+
+---
+class: middle,center,inverse
+
+# Plotting using ggplot2
+
+
+
+---
+
+## What is ggplot2?
+
+- A second (and final) iteration of the ggplot
+- Implementation of Wilkerson's Grammar of Graphics in R
+- Conceptually, a way to layer different elements onto a canvas to create a data visualization
+- Started as Dr. Hadley Wickham's PhD thesis (with Dr. Dianne Cook)
+- Won the John M. Chambers Statistical Software Award in 2006
+
+- Mimicked in other software platforms
+  - `ggplot` and `seaborn` in Python
+  - Translated in `plotly`
+
+---
+
+## ggplot2 uses the __grammar__ of __graphics__
+
+.pull-left[
+### A grammar ...
+
+- compose and re-use small parts
+- build complex structures from simpler units
+
+]
+
+--
+
+.pull-right[
+### of graphics ...
+
+- Think of yourself as a painter
+- Build a visualization  using layers on a canvas
+- Draw layers on top of each other
+]
+
+---
+
+## A dataset
+
+
+```r
+library(tidyverse) # do this once per session
+beaches &lt;- read_csv('../../data/sydneybeaches3.csv')
+```
+
+```
+# A tibble: 344 x 12
+   date        year month   day season rainfall temperature enterococci day_num
+   &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;
+ 1 2013-01-02  2013     1     2      1      0          23.4         6.7       2
+ 2 2013-01-06  2013     1     6      1      0          30.3         2         6
+ 3 2013-01-12  2013     1    12      1      0          31.4        69.1      12
+ 4 2013-01-18  2013     1    18      1      0          46.4         9        18
+ 5 2013-01-24  2013     1    24      1      0          27.5        33.9      24
+ 6 2013-01-30  2013     1    30      1      0.6        26.6        26.5      30
+ 7 2013-02-05  2013     2     5      1      0.1        25.7        66.9      36
+ 8 2013-02-11  2013     2    11      1      8          22.2       118.       42
+ 9 2013-02-17  2013     2    17      1     13.6        26.3        75        48
+10 2013-02-23  2013     2    23      1      7.2        24.8       311.       54
+# … with 334 more rows, and 3 more variables: month_num &lt;dbl&gt;,
+#   month_name &lt;chr&gt;, season_name &lt;chr&gt;
+```
+
+&lt;p align="right" style="font-size: 10pt;"&gt;Credit: D. J. Navarro&lt;/p&gt;
+
+&gt; Download the `sydneybeaches3.csv` file from the website and save it in your project's data folder
+
+---
+class: middle, center
+
+# Building a graph
+
+---
+
+.pull-left[
+
+
+```r
+ggplot()
+```
+
+### Start with a blank canvas
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+* data = beaches # Tell ggplot the data you're using
+)
+```
+
+### Add a data set
+
+&gt; Nothing has really happened yet, since we haven't said what we want to plot from the data set
+
+&gt; The `#` symbol tells R that anything after it is a *comment* and should be ignored. We'll make a lot of use of comments in our code.
+]
+.pull-right[
+
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+
+
+]
+
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+* mapping = aes(
+*   x = temperature,
+*   y = rainfall
+  )
+)
+```
+
+### Add a mapping from data to elements
+
+What goes in 
+
+- the x and y axes
+- the color of markers
+- the shape of markers
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+&gt; Now we've said what we want to plot, so axes get drawn. We haven't yet specified how we want to plot it
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+* geom_point()
+```
+
+### Add a geometry to draw
+
+What to draw:
+
+- Points, lines
+- histogram, bars, pies
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+
+&gt; Now we've said **how** we want to plot the things we want from the data
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+* geom_point(size = 4)
+```
+
+### Add options for the geom
+
+&gt; Options pertaining to how we want things drawn are usually put in the function for the geometry, e.g. `geom_point`, `geom_line`, etc. If the option is based on any element from the dataset, we have to wrap it in a `aes()` function. We'll see this later
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+  geom_point(
+*   mapping = aes(color = season_name),
+    size = 4
+  )
+```
+
+### Add a mapping to modify the geom
+
+&gt; Anything data-driven has to be a mapping, driven by the `aes` function
+
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+
+]
+
+---
+class:middle, center
+
+# A side note on `aes`
+
+---
+
+## The `aes` function
+
+The `aes` function and when it needs to be used creates quite a bit of confusion initially. Let's start with the documentation for this function
+
+
+```r
+?aes
+```
+
+&gt; #### Description
+Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. Aesthetic mappings can be set in ggplot2() and in individual layers.
+
+So, anytime we want to represent some aspect of the data on the plot in some form (color, shape, etc.), we have to use the `aes` function to *map* the data to the plot
+---
+
+## The `aes` function
+
+The `aes` function can occur in one of two places:
+
+.pull-left[
+Within the `ggplot` function:
+
+
+```r
+ggplot(
+  data=beaches,
+  mapping=aes(
+    x = temperature,
+    y = rainfall
+  )
+) + 
+  geom_point()
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+]
+.pull-right[
+In the actual `geom` layer:
+
+
+```r
+ggplot(
+  data = beaches
+) +
+  geom_point(
+    mapping = aes(
+      x = temperature,
+      y = rainfall
+    )
+  )
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## The `aes` function
+
+The `aes` function can occur in one of two places:
+
+.pull-left[
+Within the `ggplot` function:
+
++ You do this if the same mapping will be common to **all** the subsequent geometry layers
+]
+.pull-right[
+In the actual `geom` layer:
+
++ You do this if the mapping will apply **only** to that layer
++ You do it if it makes more sense to put it in the `geom`. 
+]
+---
+class: middle, center
+
+# Facets / Trellis / Small multiples
+
+---
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+  geom_point(
+    mapping = aes(color = season_name),
+    size = 4
+  ) +
+* facet_wrap( ~ season_name)
+```
+
+### Split into facets
+
+&gt; Create separate plots based on unique values of some variable (`season_name`) in your dataset
+
+&gt; Typically this variable should a few distinct values
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+  geom_point(
+    mapping = aes(color = season_name),
+    size = 4,
+*   show.legend = FALSE
+  ) +
+  facet_wrap( ~ season_name) 
+```
+
+### Remove the legend
+
+&gt; Now we're getting more into the look of the plot and how much information should be on it
+
+&gt; `show.legend` option is in `geom_point` here since it would be based on the colors of the points. If you had a different geometry like `geom_line`, you would put the `show.legend` option there if the legend was based on that geom.
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+  geom_point(
+    mapping = aes(color = season_name),
+    size = 4,
+    show.legend = FALSE
+  ) +
+  facet_wrap( ~ season_name) +
+* theme_bw()
+```
+
+### Change the background
+
+&gt; Again, a look-and-feel choice
+
+&gt; In-built `ggplot` themes are described [here](https://ggplot2.tidyverse.org/reference/ggtheme.html). Other themes are availabe via packages [`ggthemes`](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/) and others.
+
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+  geom_point(
+    mapping = aes(color = season_name),
+    size = 4,
+    show.legend = FALSE
+  ) +
+  facet_wrap( ~ season_name) +
+  theme_bw() +
+* labs(x = 'Temperature (C)', y = 'Rainfall (mm)')
+```
+
+### Update the labels
+
+&gt; This is **important**. Make sure the information in your plot is self-contained by putting appropriate labels and titles on it.
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+  geom_point(
+    mapping = aes(color = season_name),
+    size = 4,
+    show.legend = FALSE
+  ) +
+  facet_wrap( ~ season_name) +
+  theme_bw() +
+  labs(x = 'Temperature (C)', 
+       y = 'Rainfall (mm)',
+*      title = 'Sydney weather by season',
+*      subtitle = "Data from 2013 to 2018")
+```
+
+### Add titles
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = temperature,
+    y = rainfall
+  )
+) +
+  geom_point(
+    mapping = aes(color = season_name),
+    size = 4,
+    show.legend = FALSE
+  ) +
+  facet_wrap( ~ season_name) +
+  theme_bw() +
+  labs(x = 'Temperature (C)', 
+       y = 'Rainfall (mm)',
+       title = 'Sydney weather by season', 
+       subtitle = "Data from 2013 to 2018") +
+* theme(axis.title = element_text(size = 14),
+*       axis.text = element_text(size = 12),
+*       strip.text = element_text(size = 12))
+```
+
+### Customize
+]
+.pull-right[
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+
+&gt; Once again, a look-and-feel choice, but this is very useful for publications when the actual figure will be smaller but we need the labels to be legible.
+]
+
+---
+class: middle, center
+
+# Understanding the structure of ggplot
+
+---
+
+## The grammar
+.left-column70[
+- Data
+- Aesthetics (or aesthetic mappings)
+- Geometries (as layers)
+- Facets
+- Themes
+- (Coordinates)
+- (Scales)
+]
+.right-column70[
+&gt; Data, Aesthetics and Geometries are **required** to actually create a plot
+]
+
+---
+class: middle, center
+
+# Peeking under the hood
+
+---
+.pull-left[
+### If I write...
+
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = temperature,
+      y = rainfall)
+) + 
+  geom_point()
+```
+
+]
+--
+.pull-right[
+### what's really run is ...
+
+
+```r
+ggplot(
+  data = beaches, 
+  mapping = aes(
+    x = temperature, y = rainfall)) + 
+layer(
+  geom = "point",
+  stat = "identity",
+  position = "identity") + 
+facet_null() +
+theme_grey() + 
+coord_cartesian() + 
+scale_x_continuous() + 
+scale_y_continuous()
+```
+
+]
+
+--
+
+### Each element can be adapted and tweaked to create graphs
+
+---
+class: middle, center
+
+# Exploring aesthetics, mappings and their uses
+
+---
+
+## Let's start
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches, 
+  mapping = aes(
+    x = enterococci
+  )
+) + 
+  geom_density()
+```
+
+&gt; This is looking at the distribution of enterococci concentration (x-axis) in this dataset
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Bacteria growth should depend on temperature....
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = enterococci,
+*   group = season_name
+  )
+) + 
+  geom_density()
+```
+
+&gt; Can't really parse the seasons out from the graph. 
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Add some color
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = enterococci, 
+    group = season_name,
+*   color = season_name
+  )
+) + 
+  geom_density()
+```
+
+&gt; This does better distinguish the seasons (and we get a legend as a by-product). 
+
+&gt; But.... things are too crammed on the left of the plot. This is because the bacterial concentrations are low, with some high values. A transformation may be nice.
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## A better choice of scale
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  mapping = aes(
+    x = enterococci,
+    group = season_name,
+    color = season_name
+  )
+) + 
+  geom_density() + 
+* scale_x_log10()
+```
+
+&gt; This makes things a bit clearer, but still a bunch of squiggly lines
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## A better choice of where to put the color
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches, 
+  mapping = aes(
+    x = enterococci,
+    group = season_name,
+*   fill = season_name
+  )
+) +
+  geom_density() + 
+  scale_x_log10()
+```
+
+&gt; Things are covered up!
+
+&gt; For geometries with "insides", `color` puts color on the outlines, and `fill` puts color on the insides.
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Let's play peek-a-boo
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches, 
+  mapping = aes(
+    x = enterococci,
+    group = season_name,
+*   fill = season_name
+  )
+) +
+* geom_density(alpha = 0.3) +
+  scale_x_log10()
+```
+
+&gt; A bit better, but not great
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Let's break things out
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches, 
+  mapping = aes(
+    x = enterococci,
+    group = season_name,
+*   fill = season_name
+  )
+) +
+  geom_density(alpha = 0.3) + 
+  scale_x_log10() + 
+* facet_wrap(~ season_name)
+```
+
+&gt; A lot clearer!!
+
+&gt; There's stuff we don't need now, like the legend
+&gt; Also, can we please make the numbers human-readable
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Cleaning up
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches, 
+  mapping = aes(
+    x = enterococci,
+    fill = season_name
+  )
+) +
+  geom_density(show.legend = FALSE) + 
+  scale_x_log10(labels = scales::label_number()) + 
+  facet_wrap(~season_name) 
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-46-1.png)&lt;!-- --&gt;
+]
+---
+
+
+## Fixing the legend ordering
+
+.pull-left[
+
+```r
+*beaches &lt;- beaches %&gt;%
+* mutate(season_name = fct_relevel(season_name,
+*                                  c('Spring','Summer','Autumn','Winter')))
+ggplot(
+  data=beaches,
+  aes(x = enterococci,
+*     fill = season_name
+  )
+) + 
+  geom_density(show.legend = F) + 
+  facet_wrap(~ season_name) + 
+  scale_x_log10(labels = scales::label_number())
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
+
+]
+
+
+---
+class: center, middle
+
+# Exploring geometries
+
+---
+class: center, middle
+
+# Univariate plots
+
+---
+
+## Histograms
+
+.pull-left[
+
+```r
+library(tidyverse)
+library(rio)
+dat_spine &lt;- import('../../data/Dataset_spine.csv', 
+                    check.names = T) %&gt;% 
+  janitor::clean_names()
+
+ggplot(
+  data=dat_spine,
+  aes(x = degree_spondylolisthesis))+
+  geom_histogram()
+```
+]
+.pull-right[
+
+```
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-48-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+
+## Histograms
+
+.pull-left[
+
+```r
+ggplot(
+  data=dat_spine,
+  aes(x = degree_spondylolisthesis))+
+* geom_histogram(bins = 100)
+```
+
+This gives a very different view of the data
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+
+]
+
+---
+## Density plots
+
+.pull-left[
+
+```r
+ggplot(
+  data=dat_spine,
+  aes(x = degree_spondylolisthesis))+
+* geom_density()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Density plots
+
+.pull-left[
+
+```r
+ggplot(
+  data=dat_spine,
+  aes(x = degree_spondylolisthesis))+
+* geom_density(adjust = 1/5) # Use 1/5 the bandwidth
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Layering geometries
+
+.pull-left[
+
+```r
+ggplot(
+  data=dat_spine,
+  aes(x = degree_spondylolisthesis,
+*     y = stat(density)))+  # Re-scales histogram
+  geom_histogram(bins = 100, fill='yellow') +
+  geom_density(adjust = 1/5, color = 'orange', size = 2)
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Bar plots (categorical variable)
+
+.pull-left[
+
+```r
+dat_brca &lt;- rio::import('../../data/clinical_data_breast_cancer_modified.csv', 
+                   check.names = T)
+ggplot(
+  data=dat_brca,
+  aes(x = Tumor))+
+  geom_bar()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Bar plots (categorical variable)
+
+.pull-left[
+
+```r
+dat_brca &lt;- import('../../data/clinical_data_breast_cancer_modified.csv', 
+                   check.names = T)
+ggplot(
+  data=dat_brca,
+  aes(x = Tumor,
+*     fill = ER.Status))+
+  geom_bar()
+```
+
+Add additional information via mapping
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Bar plots (categorical variable)
+
+.pull-left[
+
+```r
+dat_brca &lt;- import('../../data/clinical_data_breast_cancer_modified.csv', 
+                   check.names = T)
+ggplot(
+  data=dat_brca,
+  aes(x = Tumor,
+      fill = ER.Status))+ 
+* geom_bar(position = 'dodge')
+    # Default is position = "stack"
+```
+
+Change the nature of the geometry
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-55-1.png)&lt;!-- --&gt;
+]
+
+???
+
+It is not easy to do patterns in R. Its been considered a bug rather than a feature,
+since you can induce cognitive problems using patterns. It is suggested to use 
+different palettes for distinguishing groups
+
+---
+
+## Graphing tabulated data
+
+.pull-left[
+
+```r
+tabulated &lt;- dat_brca %&gt;% count(Tumor)
+tabulated
+```
+
+```
+  Tumor  n
+1    T1 15
+2    T2 65
+3    T3 19
+4    T4  6
+```
+
+```r
+ggplot(
+  data = tabulated,
+  aes(x = Tumor, y = n)) +
+  geom_bar()
+```
+
+```
+Error: stat_count() can only have an x or y aesthetic.
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Graphing tabulated data
+
+.pull-left[
+
+```r
+tabulated &lt;- dat_brca %&gt;% count(Tumor)
+tabulated
+
+ggplot(
+  data = tabulated,
+  aes(x = Tumor, y = n)) +
+* geom_bar(stat = 'identity')
+```
+
+Here we need to change the default computation    
+
+The barplot usually computes the counts (`stat_count`)  
+
+We suppress that here since we have already   
+done the computation
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Peeking under the hood
+
+.pull-left[
+
+```r
+plt &lt;- ggplot(
+  data = tabulated,
+  aes(x = Tumor, y = n)) +
+  geom_bar()
+
+plt$layers
+```
+
+```
+[[1]]
+geom_bar: width = NULL, na.rm = FALSE, orientation = NA
+stat_count: width = NULL, na.rm = FALSE, orientation = NA
+position_stack 
+```
+
+]
+.pull-right[
+
+```r
+plt &lt;- ggplot(
+  data = tabulated,
+  aes(x = Tumor, y = n)) +
+  geom_bar(stat = 'identity')
+
+plt$layers
+```
+
+```
+[[1]]
+geom_bar: width = NULL, na.rm = FALSE, orientation = NA
+stat_identity: na.rm = FALSE
+position_stack 
+```
+
+]
+
+--
+
+&gt; Each layer has a geometry, statistic and position associated with it
+
+---
+class: middle, center
+
+# Bivariate plots
+
+---
+
+## Scatter plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = temperature))+
+  geom_point()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-60-1.png)&lt;!-- --&gt;
+
+]
+
+---
+## Scatter plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = temperature))+
+* geom_line()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-61-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Scatter plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = temperature))+
+  geom_point(color='black', size = 3) +
+  geom_line(color='red',size=2)
+```
+
+Layer points and lines
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-62-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Scatter plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = temperature))+
+* geom_line(color='red',size=2) +
+* geom_point(color='black', size = 3)
+```
+
+Order of laying down geometries matters
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-63-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Doing some computations
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = temperature)) +
+  geom_point() +
+* geom_smooth()
+```
+
+Averages over 75% of the data
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-64-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Doing some computations
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = temperature)) +
+  geom_point() +
+* geom_smooth(span = 0.1)
+```
+
+Averages over 10% of the data
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-65-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Computations over groups
+
+.pull-left[
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, 
+      y = degree_spondylolisthesis)) +
+  geom_point() +
+  geom_smooth()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-66-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Computations over groups
+
+.pull-left[
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, 
+      y = degree_spondylolisthesis,
+*     color = class_attribute)) +
+  geom_point() +
+  geom_smooth()
+```
+
+Computation is done by groups
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-67-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Computations over groups
+
+.pull-left[
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, 
+      y = degree_spondylolisthesis,
+      color = class_attribute)) + 
+  geom_point() +
+  geom_smooth() +
+* xlim(0, 100)
+```
+
+Ignore the outlier for now
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-68-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Computations over groups
+
+.pull-left[
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, 
+      y = degree_spondylolisthesis)) +
+  geom_point() +
+* geom_smooth(aes(color = class_attribute)) +
+  xlim(0, 100)
+```
+
+Only color-code the smoothers   
+
+You can change the plot based on where you map the aesthetic
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-69-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Computations over groups
+
+.pull-left[
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, 
+      y = degree_spondylolisthesis)) +
+  geom_point() +
+  geom_smooth(aes(color = class_attribute),
+*             se = F) +
+  xlim(0, 100)
+```
+
+Remove the confidence bands    
+
+Maybe a cleaner look
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
+
+]
+
+
+---
+
+## Box Plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+  geom_boxplot()
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-71-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Box Plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+  geom_boxplot()
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-73-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Violin plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+* geom_violin()
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-74-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Strip plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+  geom_point()
+```
+
+Points are overlayed on each other
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-75-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Strip plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+* geom_jitter()
+```
+
+Jittering allows all points to be seen
+
+Maybe too much
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-76-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Strip plots
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+* geom_jitter(width = 0.2)
+```
+
+Jittering allows all points to be seen
+
+Maybe too much
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-77-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Layers, again
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+* geom_boxplot() +
+  geom_jitter(width = 0.2)
+```
+
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-78-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Layers, again
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = season_name, 
+      y = temperature)) + 
+* geom_violin() +
+  geom_jitter(width = 0.2)
+```
+
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-79-1.png)&lt;!-- --&gt;
+]
+
+
+
+
+---
+class: middle, center
+
+# Scales
+
+---
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = enterococci)) + 
+  geom_point()
+```
+
+All the action is happening in the bottom bit
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-80-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = enterococci)) + 
+  geom_point() + 
+* scale_y_log10()
+```
+
+Log-transforming an axis can make things easier to see
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-81-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = enterococci)) + 
+  geom_point() + 
+* scale_y_log10(
+*   labels = scales::number_format(digits=3))
+```
+
+Making the labels a bit easier to read
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-82-1.png)&lt;!-- --&gt;
+
+]
+
+???
+
+`scales::number_format` is calling the function `number_format` from the 
+package `scales`
+
+---
+class: middle, center
+
+# Order and orientation
+
+---
+
+# Arrests in the USA in 1973
+
+.pull-left[
+
+```r
+arrests &lt;- import('../../data/USArrests.csv')
+ggplot(
+  data = arrests,
+  aes(x = State, 
+      y = Murder)) + 
+  geom_bar(stat = 'identity')
+```
+
+This plot is very hard to read
+
+There is no ordering, and states can't be read
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-83-1.png)&lt;!-- --&gt;
+
+]
+
+---
+# Arrests in the USA in 1973
+
+.pull-left[
+
+```r
+arrests &lt;- import('../../data/USArrests.csv')
+ggplot(
+  data = arrests,
+* aes(x = fct_reorder(State, Murder), # Order by murder rate
+      y = Murder)) + 
+  geom_bar(stat = 'identity')
+```
+
+We see the pattern, but its still unreadable
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-84-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# Arrests in the USA in 1973
+
+.pull-left[
+
+```r
+arrests &lt;- import('../../data/USArrests.csv')
+ggplot(
+  data = arrests,
+  aes(x = fct_reorder(State, Murder), # Order by murder rate 
+      y = Murder)) + 
+  geom_bar(stat = 'identity') + 
+* coord_flip()
+```
+
+Flipping the axes makes the states readable
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-85-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# Arrests in the USA in 1973
+
+.pull-left[
+
+```r
+arrests &lt;- import('../../data/USArrests.csv')
+ggplot(
+  data = arrests,
+  aes(x = fct_reorder(State, Murder), # Order by murder rate 
+      y = Murder)) + 
+  geom_bar(stat = 'identity') + 
+* labs(x = 'State', y = 'Murder rate') +
+* theme_bw() +
+* theme(panel.grid.major.y = element_blank(),
+*       panel.grid.minor.y = element_blank()) +
+  coord_flip()
+```
+
+Cleaning it up a little
+
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-86-1.png)&lt;!-- --&gt;
+
+]
+
+???
+
+Note that we flip after we've done all the manipulation
+
+---
+class: middle, center
+
+# Themes
+
+---
+
+# Color schemes
+
+ggplot comes with a default color scheme. There are several other schemes available
+
+- `scale_*_brewer` uses the [ColorBrewer](http://colorbrewer2.org) palettes
+- `scale_*_gradient` uses gradients
+- `scale_*_distill` uses the ColorBrewer palettes, for continuous outcomes
+
+&gt; Here * can be `color` or `fill`, depending on what you want to color
+&gt;
+&gt; Note `color` refers to the outline, and `fill` refers to the inside
+
+---
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = enterococci,
+      color = temperature)) + 
+  geom_point() +
+  scale_y_log10(name = 'Enterococci',
+                label = scales::number_format(digits=3))
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-87-1.png)&lt;!-- --&gt;
+]
+---
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = enterococci,
+      color = temperature)) + 
+  geom_point() +
+  scale_y_log10(name = 'Enterococci',
+                label = scales::number_format(digits=3))+
+  scale_color_gradient(low = 'white', high='red') + 
+  theme_dark()
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-88-1.png)&lt;!-- --&gt;
+]
+---
+
+.pull-left[
+
+```r
+ggplot(
+  data = beaches,
+  aes(x = date, y = enterococci,
+      color = temperature)) + 
+  geom_point() +
+  scale_y_log10(name = 'Enterococci',
+                label = scales::number_format(digits=3))+
+  scale_color_gradient(low = 'blue', high='red') + 
+  theme_bw()
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-89-1.png)&lt;!-- --&gt;
+]
+---
+
+## Specifying colors
+
+.pull-left[
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, y = degree_spondylolisthesis,
+      color = class_attribute)) +
+  geom_point() + 
+  geom_smooth(se = F) + 
+  coord_cartesian(xlim = c(0, 100), ylim = c(0,200))
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-90-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# Specifying colors
+
+.pull-left[
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, y = degree_spondylolisthesis,
+      color = class_attribute)) +
+  geom_point() + 
+  geom_smooth(se = F) + 
+  coord_cartesian(xlim = c(0, 100), ylim = c(0,200)) + 
+  scale_color_manual(values = c("Normal"="blue", 'Abnormal' = 'red'))
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-91-1.png)&lt;!-- --&gt;
+
+]
+
+---
+## Themes
+
+You can create your own custom themes to keep a unified look to your graphs
+
+ggplot comes with
+
+- theme_classic
+- theme_bw
+- theme_void
+- theme_dark
+- theme_gray
+- theme_light
+- theme_minimal
+
+---
+
+## Themes
+
+.pull-left[
+### Create your own
+
+
+```r
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, y = degree_spondylolisthesis,
+      color = class_attribute)) +
+  geom_point() + 
+  geom_smooth(se = F) + 
+  coord_cartesian(xlim = c(0, 100), 
+                  ylim = c(0,200))
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-92-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Themes
+
+.pull-left[
+### Create your own
+
+
+```r
+my_theme &lt;- function(){
+  theme_bw()
+}
+
+ggplot(
+  data = dat_spine,
+  aes(x = sacral_slope, y = degree_spondylolisthesis,
+      color = class_attribute)) +
+  geom_point() + 
+  geom_smooth(se = F) + 
+  coord_cartesian(xlim = c(0, 100), 
+                  ylim = c(0,200)) +
+* my_theme()
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-93-1.png)&lt;!-- --&gt;
+]
+
+
+---
+
+## Themes
+
+.pull-left[
+### Create your own
+
+
+```r
+my_theme &lt;- function(){
+  theme_bw() +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size=14),
+        strip.background = element_blank())
+}
+
+ggplot(
+  data = dat_brca,
+  aes(x = Tumor))+
+  geom_bar() + 
+  facet_grid(rows = vars(ER.Status),
+             cols = vars(PR.Status))
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-94-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Themes
+
+.pull-left[
+### Create your own
+
+
+```r
+my_theme &lt;- function(){
+  theme_bw() +
+  theme(axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size=14),
+        strip.background = element_blank())
+}
+
+ggplot(
+  data = dat_brca,
+  aes(x = Tumor))+
+  geom_bar() + 
+  facet_grid(rows = vars(ER.Status),
+             cols = vars(PR.Status)) +
+* my_theme()
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-95-1.png)&lt;!-- --&gt;
+]
+
+---
+class: middle, center
+
+# Animations
+
+---
+
+## gganimate
+
+The new `gganimate` package has made it very easy to create animations
+
+It's literally a few lines
+
+---
+
+.pull-left[
+
+```r
+library(gganimate)
+plt &lt;- ggplot(beaches,
+              aes(date, temperature))+
+  geom_path(aes(color = season_name, group = 1))+
+  geom_point()
+
+plt
+```
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-96-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+.pull-left[
+
+```r
+library(gganimate)
+plt &lt;- ggplot(beaches,
+              aes(date, temperature))+
+  geom_path(aes(color = season_name, group = 1))+
+  geom_point()
+
+plt + transition_reveal(date)
+```
+
+]
+.pull-right[
+
+![](../img/anime-1.gif)
+]
+
+
+
+---
+class: middle, center, inverse
+
+# Annotating a plot
+
+---
+
+
+
+
+## Stand-alone stories
+
+- You would like a data visualization to stand on its own
+- Relevant information should be placed on the graph
+- However, you need to balance the information content with real estate
+    - Don't clutter the graph and make it not readable
+
+---
+
+
+## Titles, subtitles and captions
+
+.pull-left[
+
+```r
+library(palmerpenguins)
+(plt &lt;- ggplot(penguins, 
+               aes(bill_length_mm, body_mass_g, 
+                   color=species))+
+  geom_point())
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-98-1.png)&lt;!-- --&gt;
+]
+
+
+
+---
+
+## Titles, subtitles and captions
+
+.pull-left[
+
+```r
+library(palmerpenguins)
+plt &lt;- ggplot(penguins, 
+              aes(bill_length_mm, body_mass_g, 
+                  color=species))+
+  geom_point()
+plt + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)')
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-99-1.png)&lt;!-- --&gt;
+]
+
+
+---
+
+## Titles, subtitles and captions
+
+
+.pull-left[
+
+```r
+library(palmerpenguins)
+plt &lt;- ggplot(penguins, 
+              aes(bill_length_mm, body_mass_g, 
+                  color=species))+
+  geom_point()
+plt + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)',
+*      color = 'Species')
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-100-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Titles, subtitles and captions
+
+
+.pull-left[
+
+```r
+library(palmerpenguins)
+plt &lt;- ggplot(penguins, 
+              aes(bill_length_mm, body_mass_g, 
+                  color=species))+
+  geom_point()
+plt + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)',
+       color = 'Species',
+*      title = "Palmer penguins",
+*      subtitle = "Bill length vs Body mass")
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-101-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Titles, subtitles and captions
+
+
+.pull-left[
+
+```r
+library(palmerpenguins)
+plt &lt;- ggplot(penguins, 
+              aes(bill_length_mm, body_mass_g, 
+                  color=species))+
+  geom_point()
+plt + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)',
+       color = 'Species',
+       title = "Palmer penguins",
+       subtitle = "Bill length vs Body mass",
+       caption = "Palmer Station LTER") 
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-102-1.png)&lt;!-- --&gt;
+]
+---
+class:middle,center
+
+# Adding derived statistics to a plot
+
+---
+
+## Adding group means
+
+.pull-left[
+
+```r
+ggplot(penguins, 
+       aes(x = bill_length_mm,
+           y = body_mass_g,
+           color = species))+
+  geom_point()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-103-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Adding group means
+
+.pull-left[
+
+```r
+means &lt;- penguins %&gt;% group_by(species) %&gt;% 
+  summarize_at(vars(bill_length_mm, body_mass_g),
+               mean, na.rm=TRUE)
+means
+```
+
+```
+# A tibble: 3 x 3
+  species   bill_length_mm body_mass_g
+* &lt;fct&gt;              &lt;dbl&gt;       &lt;dbl&gt;
+1 Adelie              38.8       3701.
+2 Chinstrap           48.8       3733.
+3 Gentoo              47.5       5076.
+```
+
+
+
+```r
+ggplot(penguins, 
+       aes(x = bill_length_mm,
+           y = body_mass_g,
+           color = species))+
+  geom_point()+ 
+* geom_point(data = means,
+*            size=8)
+```
+
+Adding data from a different dataset
+
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-104-1.png)&lt;!-- --&gt;
+
+]
+---
+
+
+
+## Adding regression metrics
+
+.pull-left[
+
+Regress highway mileage on city mileage (data: mpg)
+
+
+```r
+mod1 &lt;- lm(hwy ~ cty, data = mpg)
+r2 &lt;- broom::glance(mod1) %&gt;% pull(r.squared)
+
+ggplot(mpg, 
+       aes(x = cty, y = hwy))+
+  geom_point() + 
+  geom_smooth(method = 'lm', se=F) +
+  theme_bw()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-105-1.png)&lt;!-- --&gt;
+]
+---
+
+## Adding regression metrics
+
+.pull-left[
+
+Regress highway mileage on city mileage (data: mpg)
+
+
+```r
+mod1 &lt;- lm(hwy ~ cty, data = mpg)
+r2 &lt;- broom::glance(mod1) %&gt;% pull(r.squared) %&gt;% 
+  round(., 2)
+
+ggplot(mpg, 
+       aes(x = cty, y = hwy))+
+  geom_point() + 
+  geom_smooth(method = 'lm', se=F)+
+  annotate(geom='text',
+           x = 15, y = 40,
+           label=glue::glue("R^2 == {r}",r=r2),
+           size=12,
+           parse=T) + 
+  theme_bw()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-106-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Highlighting regions
+
+.pull-left[
+
+```r
+mpg %&gt;% 
+  mutate(cyl = as.factor(cyl)) %&gt;% 
+  ggplot(aes(x = cyl, y = hwy)) + 
+  geom_boxplot() + 
+  theme_bw()
+```
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-107-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+## Highlighting regions
+
+.pull-left[
+
+```r
+mpg %&gt;% 
+  mutate(cyl = as.factor(cyl)) %&gt;% 
+  ggplot(aes(x = cyl, y = hwy)) + 
+  geom_boxplot() + 
+  theme_bw()+
+  annotate(geom = 'rect',
+           xmin=3.75,xmax=4.25,
+           ymin = 22, ymax = 28,
+           fill = 'red',
+           alpha = 0.2) +
+  annotate('text', 
+           x = 4.5, y = 25,
+           label = 'Outliers?',
+           hjust = 0)+
+  coord_cartesian(xlim = c(0,5))+ 
+  theme_bw()
+```
+
+Note: If you have a factor on the x-axis, they are plotted at 1, 2, 3, ...
+]
+.pull-right[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-108-1.png)&lt;!-- --&gt;
+
+]
+
+
+
+
+---
+class: middle,center,inverse
+
+# Putting plots together
+
+
+---
+
+
+
+
+## The packages
+
+There are three excellent packages for putting separate `ggplot` graphs together in panels.
+
+1. **ggpubr**
+1. **cowplot**
+1. **patchwork**
+
+---
+
+## The graphs
+
+
+```r
+plt1 &lt;- ggplot(penguins, aes(x = species, y = body_mass_g, fill=species)) +
+  geom_boxplot()
+
+plt2 &lt;- ggplot(penguins, aes(x = bill_length_mm, y = body_mass_g,
+                             color = species))+
+  geom_point()
+
+plt3 &lt;- ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, 
+                             color = species))+
+  geom_smooth(se=F)
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-111-1.png)&lt;!-- --&gt;
+
+---
+
+## ggpubr
+
+
+```r
+ggarrange(plt1, plt2, plt3, ncol = 2, nrow=2)
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-112-1.png)&lt;!-- --&gt;
+
+---
+
+## ggpubr
+
+
+```r
+ggarrange(plt1, plt2, plt3, ncol = 2, nrow=2, common.legend = TRUE)
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-113-1.png)&lt;!-- --&gt;
+
+---
+
+## cowplot
+
+
+```r
+cowplot::plot_grid(plt1, plt2, plt3, nrow = 2, ncol = 2)
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-114-1.png)&lt;!-- --&gt;
+
+---
+
+## cowplot
+
+
+```r
+cowplot::plot_grid(plt1, plt2, plt3, nrow = 2, ncol = 2, labels = c('A','B','C'))
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-115-1.png)&lt;!-- --&gt;
+
+---
+
+## cowplot
+
+
+```r
+grid1 = cowplot::plot_grid(plt1, plt2, nrow = 1, rel_widths=c(0.3, 0.7),
+                           labels=c('A','B'))
+cowplot::plot_grid(grid1, plt3, nrow=2, labels = c('', 'C'))
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-116-1.png)&lt;!-- --&gt;
+
+---
+
+## patchwork
+
+
+```r
+plt1 | plt2 / plt3
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-117-1.png)&lt;!-- --&gt;
+
+---
+
+## patchwork
+
+
+```r
+(plt1 | plt2) / plt3
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-118-1.png)&lt;!-- --&gt;
+
+---
+
+## patchwork
+
+
+```r
+plt1 + plt2 + plt3 + plot_layout(ncol = 2)
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-119-1.png)&lt;!-- --&gt;
+
+
+---
+
+## Further references
+
+ggpubr: [https://rpkgs.datanovia.com/ggpubr/](https://rpkgs.datanovia.com/ggpubr/)  
+cowplot: [https://wilkelab.org/cowplot/index.html](https://wilkelab.org/cowplot/index.html) and Fundamentals of Data Visualization  
+patchwork: [https://patchwork.data-imaginist.com/index.html](https://patchwork.data-imaginist.com/index.html)
+
+
+
+---
+class: middle,center,inverse
+
+# Saving your work
+
+---
+
+
+
+
+
+You want to actually use the visualizations you make
+
++ Save to file
+    - PNG for web
+    - PDF for print
+    - High resolution PNG for Word (600-1200 dpi)
+    - Journals often want high resolution TIFF (300+ dpi)
++ Save to document
+    - Create a Word file from R Markdown
+    - Create a PowerPoint file from R Markdown.
+    
+---
+class: middle,center
+
+# Save to file
+
+---
+
+## Printers in R
+
+R allows you to save graphics by using **printers** for PDF, PNG and the like.
+
+
+```r
+*pdf('temp.pdf', width=5, height=5) # inches
+ggplot(penguins, aes(bill_length_mm, body_mass_g, color=species))+
+  geom_point() + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)', 
+       color = 'Species')
+*dev.off()
+```
+
+---
+
+## Printers in R
+
+R allows you to save graphics by using **printers** for PDF, PNG and the like.
+
+
+```r
+png('temp.png', width=5, height=5, units='in', res=300) # 300 dpi
+ggplot(penguins, aes(bill_length_mm, body_mass_g, color=species))+
+  geom_point() + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)', 
+       color = 'Species')
+*dev.off()
+```
+
+---
+
+## Printers in R
+
+R allows you to save graphics by using **printers** for PDF, PNG and the like.
+
+
+```r
+tiff('temp.tif', width=5, height=5, units='in', res=300, compression='lzw') # 300 dpi
+ggplot(penguins, aes(bill_length_mm, body_mass_g, color=species))+
+  geom_point() + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)', 
+       color = 'Species')
+dev.off() 
+```
+
+---
+
+## Printers in R
+
+#### Issues with tiff on a Mac
+
+The `tiff` printer doesn't annotate the TIFF file properly, so Preview thinks it's at 72 dpi, regardless
+of the setting.
+
+The workaround is to print to PDF, and convert to TIFF, either via Preview, or using the **pdftools** package.
+
+
+```r
+pdf('temp.pdf', width=5, height=5) # inches
+ggplot(penguins, aes(bill_length_mm, body_mass_g, color=species))+
+  geom_point() + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)', 
+       color = 'Species')
+dev.off() 
+pdftools::pdf_convert('temp.pdf', format='tiff', dpi=300)
+```
+
+---
+
+## ggplot2 savings
+
+The previous slides showed the basic R way of printing a plot to a file. **ggplot2** makes it a bit easier.
+
+
+```r
+ggplot(penguins, aes(bill_length_mm, body_mass_g, color=species))+
+  geom_point() + 
+  labs(x = 'Bill length (mm)',
+       y = 'Body mass (g)', 
+       color = 'Species')
+ggsave('temp.pdf', width=5, height=5)
+```
+
+`ggsave` figures out the type from the ending. If you use `temp.png` it will create a PNG file. 
+
+Note, in all of the examples, the file gets saved to the working directory (`getwd()`). 
+
+---
+
+## Practice
+
+Save to PDF by default
+
+Why?
+
++ PDF is _infinite resolution_. As a vector format, it can be infinitely magnified.
++ PNG, TIFF are raster formats, so if you magnify too much, you'll see pixels
++ Convert from PDF to other raster formats saves both resolution and disk space.
+
+---
+class: middle, inverse
+
+# Save to document
+
+---
+
+## Saving to a document
+
+From the same R Markdown where you create the plot, you can save to Word or PowerPoint (even if you 
+don't have it on your computer) by changing the _front matter_ on top (between the `---`)
+
++ For Word, use `output: word_document`
++ For PowerPoint, use `output: powerpoint_presentation`
+
+
+----
+
+You can also learn the excellent **officer** package to directly create Word and PowerPoint
+presentations from R programmatically. See the website at https://davidgohel.github.io/officer/index.html.
+
+--- 
+
+
+
+---
+class:middle,center,inverse
+
+# Visualization in different applications
+
+---
+
+
+
+## Goals
+
+1. Visualization in biomedical applications and models
+1. Visualizing spatial data using maps
+1. Bioinformatics
+
+---
+class: middle,inverse
+
+# Biomedical applications
+
+---
+class: middle
+
+# Survival analysis
+
+---
+
+## Survival analysis
+
+Survival analysis is the analysis of time-to-event data. In biomedical research, *event* can mean
+
+1. death
+1. recurrence or relapse (cancer, infection)
+1. equipment failure (pacemakers, orthopedic implants)
+
+--
+
+You need two pieces of information: 
+1. the time of the event or the time you last saw the subject, and 
+1. the status (dead/alive) the last time you saw the subject. If subject is alive, you call that observation _censored_, since you didn't observe the subject long enough to see the event happen.
+---
+
+## Survival analysis
+
+The basic graphical tool in survival analysis is the _Kaplan-Meier curve_, which shows the 
+proportion of subjects **still surviving** at any given time, with 100% alive at time 0. 
+
+The Kaplan-Meier curve is computed using the function `survival::survfit` and uses the
+same formula interface as usual models, with one little quirk.
+
+
+```r
+library(survival)
+brca &lt;- readxl::read_excel('../../data/BreastCancer_Clinical.xlsx', .name_repair = 'universal')
+fit &lt;- survfit(Surv(OS.Time, OS.event) ~ PR.Status, data = brca)
+```
+
+We have a composite dependent variable, comprising both the time and status of each event. It is 
+encapsulated in the function `Surv` (note capitalization)
+
+---
+
+## Kaplan-Meier curve
+
+.left-column70[
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-128-1.png)&lt;!-- --&gt;
+]
+.right-column70[
++ Small ticks are times when subjects are censored
++ The log-rank test tests if the stratified curves are statistically different
++ The risk table gives the number still alive at different times.
+]
+---
+
+## Kaplan-Meier curve
+
+The plot is generated by the following code:
+
+
+```r
+library(survminer)
+(plt &lt;- ggsurvplot(fit, pval=TRUE, pval.method = TRUE, risk.table=TRUE,
+                   legend.labs = c('PR-','PR+'),
+                   xlab = 'Time (days)'))
+```
+
++ The actual plot can be accessed using `plt$plot` and is a regular **ggplot2** object
++ The table can be accessed using `plt$table` and is _also_ a **ggplot2** object
+
+There is a lot of customization of these plots that are possible. See 
+[https://rpkgs.datanovia.com/survminer/index.html](https://rpkgs.datanovia.com/survminer/index.html) for
+tutorials and details.
+
+---
+class: middle
+
+# Regression results
+
+---
+
+## Displaying the results of a regression model
+
+We're used to seeing the results of a regression analysis in tables, but graphically displaying them
+may make them easier to understand. 
+
+We'll use a toy example using the `mpg` data.
+
+We fit a linear regression model using 
+
+
+```r
+mpg &lt;- mpg %&gt;% 
+  mutate(year = as.factor(year)) %&gt;% 
+  mutate(trans = str_extract(trans, '[:alnum:]+')) %&gt;% 
+  mutate(cyl = as.factor(cyl))
+fit &lt;- lm(cty ~ year + trans + cyl + drv + class, data=mpg)
+```
+
+This models city mpg against year, type of transmission, number of cylinders, type of drive, and class of car.
+
+---
+
+## Displaying the results of a regression model
+
+As a table, these results look like 
+
+.left-column70[
+
+```r
+knitr::kable(broom::tidy(fit))
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20.5622426 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1227750 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.3137694 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; year2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4624090 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2712424 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.7047815 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0896468 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; transmanual &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4024746 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3106162 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2957299 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1964264 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cyl5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.1058003 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0607113 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.9852718 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0483563 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cyl6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.4162456 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3620780 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -9.4351106 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cyl8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -5.5938201 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4951472 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -11.2972877 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; drvf &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.5030933 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4872506 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.1371787 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000006 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; drvr &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0873527 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5793938 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.1507656 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8802988 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; classcompact &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.6774636 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1124558 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.5078924 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1330167 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; classmidsize &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.2914265 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1438440 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.0032683 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0463754 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; classminivan &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -4.3516621 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2936355 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.3639014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0009065 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; classpickup &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.5335839 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1133642 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.1737898 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0017198 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; classsubcompact &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.5689003 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0690946 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.5321328 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5951710 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; classsuv &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -3.0282240 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0504330 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.8828341 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0043320 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+.right-column70[
+Obviously this needs cleaning up
+
+We'd fix the terms, and reduce the number of decimal places to 2
+
+The point is, it's relatively hard to understand the relative effects of different levels.
+]
+
+---
+
+## Displaying the results of a regression model
+
+As a figure, it's probably a bit better
+
+.left-column70[
+
+```r
+results = broom::tidy(fit) %&gt;% filter(term !="(Intercept)")
+ggplot(results)+
+  geom_pointrange(aes(x=term, y=estimate, 
+                      ymin = estimate-2*std.error, ymax=estimate+2*std.error))+
+  geom_hline(yintercept=0, linetype=2) + 
+  coord_flip() + 
+  theme_439
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-132-1.png)&lt;!-- --&gt;
+]
+.right-column70[
+We plot the estimate and 95% confidence interval for each term
+
+Provide reference line of 0
+
+.heatinline[Can see increasing and decreasing patterns within variable levels]
+
+]
+
+---
+class: inverse
+
+## A learning note
+
+
+One of the nice things about learning an open-source language is that there are plenty of
+examples out there, and you're allowed (for the most part) to copy others' code. So developing
+the skill of understanding other people's code is really useful and somewhat important.
+
+.saltinline[Reach out to me if it really feels mysterious and arcane. I'm not teaching mystical arts here.]
+
+---
+
+## Logistic regression
+
+We'll use the `PimaIndianDiabetes2` data from the **mlbench** package
+
+
+```r
+library(mlbench); data("PimaIndiansDiabetes2") # 2 commands separated by ;
+fit_logistic &lt;- glm(diabetes ~ pregnant + pressure + triceps + mass, 
+                    data = PimaIndiansDiabetes2, 
+                    family='binomial') # This option makes this logistic regression
+```
+
+The unifying step to displaying the results of most regression modeling is `broom::tidy`. We'll transform the 
+results a bit, since logistic regression provides log-odds ratios and we will display the odds ratios.
+
+
+```r
+results &lt;- broom::tidy(fit_logistic)
+results &lt;- results %&gt;% 
+  mutate(OR = exp(estimate),
+         LCB = exp(estimate - 2*std.error),
+         UCB = exp(estimate + 2*std.error)) %&gt;% 
+  filter(term != '(Intercept)')
+```
+
+---
+
+## Logistic regression
+
+.left-column70[
+
+```r
+ggplot(results)+
+  geom_pointrange(aes(x = term, y = OR, ymin = LCB, ymax = UCB))+
+  geom_hline(yintercept = 1, linetype=2)+
+  coord_flip()
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-135-1.png)&lt;!-- --&gt;
+]
+.right-column70[
+The graph makes it clear that number of pregnancies and body mass significantly influence the odds of being diabetic, but blood pressure and tricep size do not
+]
+
+---
+
+## Cox proportional hazards regression
+
+For survival data, Cox regression is typically used to model the *hazard rate*, i.e. the instantaneous
+risk of having an event. 
+
+We'll use the breast cancer dataset to do this, after some data munging
+
+
+```r
+library(survival)
+brca1 &lt;- brca %&gt;% 
+  mutate(ER.Status = ifelse(ER.Status == 'Indeterminate', NA, ER.Status),
+         HER2.Final.Status = ifelse(HER2.Final.Status=='Equivocal', NA, HER2.Final.Status))
+fit_cox &lt;- coxph(Surv(OS.Time,OS.event) ~ ER.Status + PR.Status + HER2.Final.Status, data=brca1)
+(results &lt;- broom::tidy(fit_cox))
+```
+
+```
+# A tibble: 3 x 5
+  term                      estimate std.error statistic p.value
+  &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 ER.StatusPositive          -0.0428     0.909   -0.0471   0.962
+2 PR.StatusPositive          -1.00       0.923   -1.08     0.278
+3 HER2.Final.StatusPositive  -1.55       1.12    -1.39     0.166
+```
+
+Notice that a Cox regression does not have an intercept term
+---
+
+## Cox regression
+
+.left-column70[
+
+```r
+results &lt;- results %&gt;% 
+  mutate(HR = exp(estimate),
+         LCB = exp(estimate - 2*std.error),
+         UCB = exp(estimate + 2*std.error))
+ggplot(results)+
+  geom_pointrange(aes(x = term, y = HR, 
+                      ymin = LCB, ymax = UCB)) +
+  geom_hline(yintercept = 1, linetype=2)+
+  coord_flip()+
+  theme_439
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-137-1.png)&lt;!-- --&gt;
+
+]
+.right-column70[
+These results may seem counter-intuitive
+
+One may need to do some model building to see what model fits the data well, i.e.
+what variables and transformed variables should be included in the model.
+]
+
+---
+
+## Creating a function for these plots
+
+We've basically used the same code to create the graphs in all three cases, albeit with
+some modest data transformations. 
+
+A general rule is that if you're using the same code more than twice, you should probably make it into a 
+function, so you avoid copy-and-paste of code and the mistakes that engenders
+
+
+```r
+plt_reg_results &lt;- function(results, reflevel=0){
+  require(ggplot2)
+  plt &lt;- ggplot(results)+
+    geom_pointrange(aes(x = term, y = estimate, 
+                        ymin = LCB, ymax = UCB))+
+    geom_hline(yintercept = reflevel)+
+    coord_flip()
+  return(plt)
+}
+```
+
+You should document what format `results` should be in, and what `reflevel` means using comments
+
+With such a function, you might need to do a bit more data munging, but creating the plots becomes a unified process.
+
+---
+
+## Creating a function for these plots
+
+.pull-left[
+
+```r
+broom::tidy(fit) %&gt;% 
+  mutate(LCB = estimate - 2*std.error,
+         UCB = estimate + 2*std.error) %&gt;% 
+  filter(term!='(Intercept)') %&gt;% 
+  plt_reg_results()
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-139-1.png)&lt;!-- --&gt;
+
+]
+.pull-right[
+
+```r
+broom::tidy(fit_logistic) %&gt;% 
+  mutate(LCB = exp(estimate - 2*std.error),
+         UCB = exp(estimate + 2*std.error),
+         estimate = exp(estimate)) %&gt;% 
+  filter(term != '(Intercept)') %&gt;% 
+  plt_reg_results(reflevel=1)
+```
+
+![](/Users/abhijit/ARAASTAT/Teaching/AZ_PracticalR/docs/slides/lectures/week3/00_tidyplots_files/figure-html/unnamed-chunk-140-1.png)&lt;!-- --&gt;
+
+]
+
+
+
+---
+
+
+
+class:middle, center, inverse
+
+# Annotations
+
+---
+
+
+
+## An example 
+
+&lt;div id="origecon"&gt;&lt;/div&gt;
+![](../img/economist1.gif)
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+```r
+library(tidyverse)
+theme_set(theme_bw())
+econ_data &lt;- rio::import(fs::path(datadir, 'EconomistData.csv'))
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_point()
+```
+]
+.pull-right[
+
+![](00_tidyplots_files/figure-html/a1-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+```r
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_point() +
+  geom_smooth(color='red', se=F)
+```
+
+#### Add a trend line
+]
+.pull-right[
+![](../img/a2-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+```r
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+* geom_smooth(color='red', se=F) +
+* geom_point()
+```
+
+#### Reverse order so points are above line
+]
+.pull-right[
+
+![](../img/a3-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+```r
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+* geom_point(shape = 1, size = 4, stroke=1.25)
+```
+
+#### Different shape for points
+]
+.pull-right[
+![](../img/a4-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+```r
+pointsToLabel &lt;- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
+                   "Afghanistan", "Congo", "Greece", "Argentina", "Brazil",
+                   "India", "Italy", "China", "South Africa", "Spane",
+                   "Botswana", "Cape Verde", "Bhutan", "Rwanda", "France",
+                   "United States", "Germany", "Britain", "Barbados", "Norway", "Japan",
+                   "New Zealand", "Singapore")
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+  geom_point(shape = 1, size = 4, stroke=1.25) + 
+  geom_text(aes(label=Country),
+            color = 'gray20')
+```
+
+#### Label countries
+]
+.pull-right[
+![](../img/a5-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+```r
+pointsToLabel &lt;- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
+                   "Afghanistan", "Congo", "Greece", "Argentina", "Brazil",
+                   "India", "Italy", "China", "South Africa", "Spane",
+                   "Botswana", "Cape Verde", "Bhutan", "Rwanda", "France",
+                   "United States", "Germany", "Britain", "Barbados", "Norway", "Japan",
+                   "New Zealand", "Singapore")
+ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+  geom_point(shape = 1, size = 4, stroke=1.25) + 
+  geom_text(aes(label=Country),
+            color = 'gray20', 
+*           data = econ_data %&gt;%
+*             dplyr::filter(Country %in% pointsToLabel))
+```
+
+#### Better, but labels are overlayed on points
+]
+.pull-right[
+![](../img/a6-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+```r
+*library(ggrepel)
+pointsToLabel &lt;- c("Russia", "Venezuela", "Iraq", "Myanmar", "Sudan",
+                   "Afghanistan", "Congo", "Greece", "Argentina", "Brazil",
+                   "India", "Italy", "China", "South Africa", "Spane",
+                   "Botswana", "Cape Verde", "Bhutan", "Rwanda", "France",
+                   "United States", "Germany", "Britain", "Barbados", "Norway", "Japan",
+                   "New Zealand", "Singapore")
+(plt &lt;- ggplot(econ_data,
+       aes(x = CPI, y = HDI, color=Region))+
+  geom_smooth(color='red', se=F) + 
+  geom_point(shape = 1, size = 4, stroke=1.25) + 
+* geom_text_repel(aes(label=Country),
+            color = 'gray20', 
+            force=20,
+            data = econ_data %&gt;% 
+              dplyr::filter(Country %in% pointsToLabel)))
+```
+
+]
+.pull-right[
+![](../img/a7-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+
+Let's re-order the regions
+
+
+```r
+econ_data$Region &lt;- 
+  factor(econ_data$Region,
+         levels = c("EU W. Europe",
+                    "Americas",
+                    "Asia Pacific",
+                    "East EU Cemt Asia",
+                    "MENA",
+                    "SSA"),
+         labels = c("OECD",
+                    "Americas",
+                    "Asia../nOceania",
+                    "Central../nEastern Europe",
+                    "Middle East../nnorth Africa",
+                    "Sub-Sahar../nAfrica"))
+
+*plt$data = econ_data
+*plt
+```
+]
+.pull-right[
+![](../img/a8-1.png)
+]
+
+---
+
+## Reconstructing this annotated graph
+
+.pull-left[
+Clean up the graphic
+
+```r
+(plt_corrupt &lt;- 
+   plt +
+  scale_x_continuous(name = 'Corruption Perceptions Index',
+                     breaks = 1:10) +
+  scale_y_continuous(name="Human Development Index",
+                     breaks = seq(0.2, 1, by = 0.1))+
+  scale_color_manual(name = '',
+                     values = c("#24576D",
+                                "#099DD7",
+                                "#28AADC",
+                                "#248E84",
+                                "#F2583F",
+                                "#96503F")) +
+  ggtitle("Corruption and Human development")+
+  theme_bw()+
+  theme(legend.position='top',
+        legend.direction='horizontal')
+)
+```
+]
+.pull-right[
+![](../img/a9-1.png)
+]
+
 
 
 
