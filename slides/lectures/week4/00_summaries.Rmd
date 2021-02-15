@@ -1,0 +1,32 @@
+---
+title: Practical R
+author: Abhijit Dasgupta
+institution: AstraZeneca
+date: "15 February, 2021"
+---
+
+```{r, include=FALSE, child="../css/setup.Rmd"}
+
+```
+
+```{r, child='children/joins.Rmd'}
+
+```
+
+```{r, child='children/factors.Rmd'}
+
+```
+
+```{r, child='maps.Rmd'}
+
+```
+
+```{r, child='children/stat_summaries.Rmd'}
+
+
+```
+
+```{r, child='children/test.Rmd'}
+
+```
+
