@@ -21,6 +21,8 @@ tab[2,2] <- '[HTML](lectures/week2/00_packages.html)'
 tab[2,3] <- '[PDF](lectures/week2/00_packages.pdf)'
 tab[3,2] <- '[HTML](lectures/week3/00_tidyplots.html)'
 tab[3,3] <- '[PDF](lectures/week3/00_tidyplots.pdf)'
+tab[4,2] <- '[HTML](lectures/week4/00_summaries.html)'
+tab[4,3] <- '[PDF](lectures/week4/00_summaries.pdf)'
 tab %>% 
   gt() %>% 
   fmt_markdown(columns = TRUE)
