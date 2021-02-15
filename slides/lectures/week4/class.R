@@ -56,6 +56,10 @@ data(diamonds)
 
 data(nycflights13)
 
+# distinguish between group_by and nest
+
+
+
 # Map ---------------------------------------------------------------------
 
 sites <- c('Brain','Colon','Esophagus','Lung','Oral')
@@ -136,3 +140,56 @@ brca_combined = clinical %>% left_join(proteome, by=c('complete_tcga_id'='tcga_i
 brca_combined %>% group_by(er_status) %>% summarise(across(starts_with('np'), ~mean(.x, na.rm=T)))
 tableone::CreateTableOne(vars = variables, strata = 'er_status', data=brca_combined)
 
+
+# Testing -----------------------------------------------------------------
+
+flights %>% group_by(carrier) %>% summarize(two_airports = any(origin=='EWR') & any(origin=='JFK')) %>% ungroup() %>% filter(two_airports) -> two_airports
+flights_both <- flights %>% semi_join(two_airports)
+flights_both %>% select(carrier) %>% n_distinct()
+flights_both %>% group_by(origin) %>% summarise(mean_delay = mean(dep_delay, na.rm=T))
+flights_both %>%filter(origin != 'LGA') %>%
+  nest(data=-carrier) %>%
+  mutate(models = map(data, ~wilcox.test(dep_delay~origin, data=.x))) %>%
+  mutate(pvalue = map_dbl(models, 'p.value')) %>% select(carrier, pvalue) %>%
+  arrange(pvalue)
+
+brca_expression <- rio::import('slides/lectures/data/BreastCancer_Expression_full.csv') %>%
+  janitor::clean_names()
+
+brca_combined <- clinical %>% left_join(brca_expression, by=c('complete_tcga_id'='tcga_id'))
+
+# find which proteins are expressed differently by PR status
+# Things you want to group by or separate for analyses need to be in a column
+
+tmp <- brca_combined %>% select(pr_status, starts_with('np')) %>%
+  pivot_longer(names_to = 'protein', values_to = 'expression',
+               cols = starts_with('np')) %>%
+  filter(!is.na(expression)) %>%
+  nest(data=-protein) %>%
+  mutate(tests = map(data, ~wilcox.test(expression ~ pr_status, data=.x))) %>%
+  mutate(pvalue = map_dbl(tests, 'p.value')) %>%
+  select(protein, pvalue)
+
+
+# multiple files ----------------------------------------------------------
+library(tidyverse)
+expression_folder <- here::here('slides/lectures/data/GSE123519_RAW/')
+design <- rio::import(here::here('slides/lectures/data/GSE123519design.xlsx'))
+design <- design %>%
+  mutate(Class = str_remove(Class, '-\\d+$')) %>%
+  mutate(Class = ifelse(Class == 'wt ctx-1-re-run', 'wt ctx', Class))
+
+expression_files <- dir(expression_folder, full.names = T)
+ex_data <- rio::import(expression_files[1])
+ex_data %>% select(gene_id, FPKM) #fragments per kilobase million
+
+dat <- rio::import_list(expression_files) %>%
+  map(select, gene_id, FPKM)
+for(i in seq_along(dat)){
+  id <- str_extract(names(dat)[i], 'GSM\\d+')
+  names(dat[[i]])[2] <- id
+}
+dat <- dat %>% map(~slice(., 1:1000))
+dat_combined <- Reduce(left_join, dat)
+dat_combined <- dat_combined %>% pivot_longer(names_to = 'gene', values_to = 'expression',
+                                              cols = starts_with('GSM'))
