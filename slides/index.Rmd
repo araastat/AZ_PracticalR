@@ -27,7 +27,7 @@ pdffiles <- glue('[PDF]({pdffiles})')
 
 tab <- tibble('HTML' = htmlfiles, 'PDF' = pdffiles) %>% 
   mutate('Week' = paste('Week', seq_along(htmlfiles))) %>% 
-  relocate('Week', before = 1)
+  relocate('Week')
 
 tab %>% 
   gt() %>% 
