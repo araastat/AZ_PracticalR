@@ -1,0 +1,200 @@
+
+---
+class: middle,center,inverse
+
+# Reporting modeling results
+
+---
+
+# Tabular results
+
+The **gtsummary** package provides nice tabular summaries of model results, and
+can be embeeded in HTML or Word documents (we'll see this in Week 6)
+
+.panelset[
+.panel[
+.panel-name[Linear regression]
+.pull-left[
+```{r lmres, eval = F, echo = T}
+library(gtsummary)
+theme_gtsummary_compact()
+tbl_regression(myLinearModel)
+```
+]
+.pull-right[
+```{r, eval=T, echo = F, ref.label="lmres"}
+```
+]
+]
+.panel[
+.panel-name[Logistic regression]
+.pull-left[
+```{r lrres, eval = F, echo = T}
+library(gtsummary)
+tbl_regression(myLR, exponentiate = T)
+```
+]
+.pull-right[
+```{r, eval=T, echo = F, ref.label="lrres"}
+```
+]
+]
+.panel[
+.panel-name[Cox regression]
+.pull-left[
+```{r coxres, eval = F, echo = T}
+library(gtsummary)
+tbl_regression(survModel, exponentiate = T)
+```
+]
+.pull-right[
+```{r, eval=T, echo = F, ref.label="coxres"}
+```
+]
+]
+]
+
+---
+
+# A more involved example
+
+```{r, echo=T}
+m1 <- lm(body_mass_g ~., data=penguins)
+broom::tidy(m1)
+```
+
+---
+
+# A quick pipeline to extract factor levels
+
+```{r}
+b <- broom::tidy(m1)
+
+# extract feature names
+feature_names <- c('\\(Intercept\\)',attr(terms(m1),'term.labels'))
+feature_query <- paste(feature_names, collapse='|')
+b <- b %>% 
+  mutate(features = str_extract(term, feature_query),
+         feature_levels = str_remove(term, feature_query)) %>% 
+  relocate(features, feature_levels, .after=term)
+b
+```
+
+---
+
+```{r mod1, include=F}
+tbl_regression(m1,
+  label = list(bill_length_mm ~ 'Bill length (mm)',
+               bill_depth_mm ~ 'Bill depth (mm)',
+               flipper_length_mm ~ 'Flipper length (mm)')) %>% 
+  add_global_p() %>% 
+  bold_p(t = 0.05) %>% 
+  bold_labels() %>% 
+  italicize_levels()
+```
+
+`r chunk_reveal('mod1')`
+
+---
+
+
+.pull-left[
+```{r relevel, echo=T,eval=F}
+penguins1 <- penguins %>% 
+  mutate(species=fct_relevel(species,'Gentoo')) #<<
+m2 <- lm(body_mass_g ~ ., data=penguins1)
+tbl_regression(m2,
+  label = list(bill_length_mm ~ 'Bill length (mm)',
+               bill_depth_mm ~ 'Bill depth (mm)',
+               flipper_length_mm ~ 'Flipper length (mm)')) %>% 
+  add_global_p() %>% 
+  bold_p(t = 0.05) %>% 
+  bold_labels() %>% 
+  italicize_levels()
+```
+
+### Changing reference level for a factor predictor
+]
+.pull-right[
+```{r, ref.label='relevel', echo=F, eval=T, fig.width=2}
+
+```
+
+]
+
+---
+
+### Putting together multiple models
+
+.pull-left[
+```{r m1, echo=T, eval=F}
+(gt_r1 <- glm(response ~ trt + grade, trial, 
+              family = binomial) %>%
+  tbl_regression(exponentiate = TRUE))
+```
+```{r m2, echo=F, eval=F}
+(gt_r2 <- coxph(Surv(ttdeath, death) ~ trt + grade,
+                trial) %>%
+  tbl_regression(exponentiate = TRUE))
+```
+```{r m3, echo=F, eval=F}
+(gt_t1 <- trial[c("trt", "grade")] %>% 
+  tbl_summary(missing = "no") %>% 
+  add_n() %>%
+  modify_header(stat_0 ~ "**n (%)**") %>%
+  modify_footnote(stat_0 ~ NA_character_))
+```
+```{r m4, echo=F, eval=F}
+tbl_merge(
+  list(gt_t1, gt_r1, gt_r2),
+  tab_spanner = c(NA_character_, "**Tumor Response**", "**Time to Death**")
+)
+```
+]
+.pull-right[
+```{r, eval=T, echo=F, ref.label='m1'}
+
+```
+]
+
+---
+
+### Putting together multiple models
+
+.pull-left[
+```{r, eval=F, echo=T, ref.label='m2'}
+```
+
+]
+.pull-right[
+```{r, eval=T, echo=F, ref.label='m2'}
+
+```
+
+]
+
+---
+
+### Putting together multiple models
+
+.pull-left[
+```{r, eval=F, echo=T, ref.label='m3'}
+
+```
+
+]
+.pull-right[
+```{r, eval=T, echo=F, ref.label='m3'}
+
+```
+
+]
+
+---
+
+### Putting together multiple models
+
+```{r, eval=T, echo=T, ref.label='m4'}
+
+```
+

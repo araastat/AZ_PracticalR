@@ -1,0 +1,37 @@
+---
+title: Practical R
+author: Abhijit Dasgupta
+institution: AstraZeneca
+date: "22 February, 2021"
+---
+
+```{r, include=FALSE, child="../css/setup.Rmd"}
+
+```
+```{r, include=F}
+knitr::opts_chunk$set(cache=T)
+```
+
+
+```{r, child='children/models1.Rmd'}
+
+```
+
+```{r, child='children/model_outputs.Rmd'}
+
+```
+
+```{r, child='children/sims.Rmd'}
+
+```
+
+```{r, child='children/ml.Rmd'}
+
+```
+
+
+```{r, child='children/modeling.Rmd'}
+
+```
+
+

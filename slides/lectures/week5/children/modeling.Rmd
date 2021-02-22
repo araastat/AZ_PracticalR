@@ -1,0 +1,247 @@
+
+---
+class: middle,center,inverse
+
+# A general modeling framework: tidymodels
+
+---
+
+## Tidymodels
+
+**tidymodels** is a meta-package, much like **tidyverse** but bundling a set of 
+philosophically similar packages for model-building. 
+
+```{r, echo=F}
+get_description <- function(pkgs){
+  tibble(Package = pkgs) %>% 
+    mutate(Description = map_chr(Package, ~packageDescription(.)$Title)) %>% 
+    knitr::kable() %>% 
+    kableExtra::kable_styling()
+}
+x <- setdiff(
+  tidymodels::tidymodels_packages(), tidyverse::tidyverse_packages()
+)
+x <- setdiff(x, 'tidymodels')
+get_description(x)
+```
+
+---
+
+## Split data between a training and a test set
+
+```{r}
+library(tidymodels)
+
+set.seed(3849) # to seed the random number generator
+
+# Split data into training and test sets
+data_split <- initial_split(penguins_complete,
+                            prop = 0.75, 
+                            strata = 'species')
+
+dat_train <- training(data_split)
+dat_test <- testing(data_split)
+```
+
+---
+
+## Fit models on the training set
+
+```{r}
+ml11 <- randomForest(body_mass_g ~ ., data=dat_train)
+ml21 <- gbm(body_mass_g ~ ., data = dat_train, distribution = 'gaussian')
+ml31 <- lm(body_mass_g ~ ., data=dat_train)
+
+mods1 <- list('random_forest' = ml11,
+              'boosted_trees' = ml21,
+              'linear_regression' = ml31)
+preds1 <- map(mods1, predict, newdata = dat_test)
+
+rmse <- map_dbl(preds1,
+                ~yardstick::rmse_vec(dat_test$body_mass_g,
+                                     .))
+rmse
+```
+
+So, on the test set, the linear regression model and the random forest model perform similarly, with the boosted model doing worse.
+
+---
+
+## Unification through the parsnip package
+
+```{r}
+library(tidymodels)
+
+mods2 <- list(
+'random_forest'= rand_forest() %>% 
+  set_engine('randomForest') %>% 
+  set_mode('regression'),
+'boosted_tree' = boost_tree(mode='regression') %>% 
+  set_engine('xgboost', objective='reg:squarederror'),
+'linear_regression' =  linear_reg() %>% 
+  set_engine('lm')
+)
+
+preds <- mods2 %>% 
+  map(function(m) m %>% fit(body_mass_g ~ ., data=dat_train) %>% 
+        predict(new_data = dat_test)) %>% 
+  bind_cols() %>% 
+  set_names(names(mods2))
+map_dbl(preds, ~yardstick::rmse_vec(dat_test$body_mass_g,.))
+```
+
+---
+class: middle,center,inverse
+
+# A machine learning workflow
+
+---
+
+## Using the nycflights13 data
+
+We'll use the nycflights13 data, which provides information about all domestic US 
+flights departing one of the three metropolitan New York City airports in 2013. 
+In this example we will model whether flights arrive late at their destination
+
+```{r}
+library(nycflights13)
+glimpse(flights)
+```
+
+---
+
+## Data munging
+
+```{r}
+set.seed(2949)
+
+flight_data <- 
+  flights %>% 
+  mutate(arr_delay = ifelse(arr_delay >= 30, 'late','on_time'),
+         arr_delay = factor(arr_delay),
+         date = as.Date(time_hour)) %>% 
+  inner_join(weather, by = c('origin','time_hour')) %>% 
+  select(dep_time, flight, origin, dest, air_time, distance, 
+         carrier, date, arr_delay, time_hour) %>% 
+  na.omit() %>% 
+  mutate(across(where(is.character), as.factor))
+```
+
+.pull-left[
+```{r}
+flight_data %>% 
+  count(arr_delay) %>% 
+  mutate(prop = n/sum(n))
+```
+]
+.pull-right[
+```{r}
+janitor::tabyl(flight_data, arr_delay)
+```
+
+]
+
+---
+
+## Split the data
+
+```{r}
+set.seed(555)
+
+data_split <- initial_split(flight_data, prop = 3/4)
+
+train_data <- training(data_split)
+test_data <- testing(data_split)
+```
+
+---
+
+## Preprocess the data
+
+```{r}
+flights_rec <- 
+  recipe(arr_delay ~ ., data=train_data) %>% 
+  update_role(flight, time_hour, new_role = "ID") %>% 
+  step_date(date, features = c("dow", "month")) %>%               
+  step_holiday(date, holidays = timeDate::listHolidays("US")) %>% 
+  step_rm(date) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>% 
+  step_zv(all_predictors())
+flights_rec
+```
+
+
+---
+
+## Define a model
+
+```{r}
+lr_mod <- logistic_reg() %>% 
+  set_engine('glm')
+lr_mod
+
+```
+
+---
+
+## Create a workflow
+
+```{r}
+flights_wflow <- 
+  workflow() %>% 
+  add_model(lr_mod) %>% 
+  add_recipe(flights_rec)
+
+flights_wflow
+```
+
+---
+
+## Fit model to the data
+
+```{r}
+flights_fit <- 
+  flights_wflow %>% 
+  fit(data = train_data)
+```
+
+--
+
+## Predict on the test data
+
+```{r}
+flights_pred <- 
+  flights_fit %>% 
+  predict(test_data, type='prob') %>% 
+  bind_cols(test_data %>% select(arr_delay, time_hour, flight))
+head(flights_pred)
+```
+
+---
+
+## Evaluate the model fit
+
+.pull-left[
+```{r roc, eval = F, echo = T}
+flights_pred %>% 
+  roc_curve(truth=arr_delay, .pred_late) %>% 
+  autoplot()
+```
+
+The area under the ROC curve is `r flights_pred %>% yardstick::roc_auc(truth=arr_delay, .pred_late) %>% pull(.estimate)`. 
+]
+.pull-right[
+```{r, eval=T, echo = F, ref.label="roc", fig.height=4}
+```
+]
+
+---
+
+# Resources
+
+This workflow is not basic, so I'll point you to some resources.
+
+1. [Getting started with tidymodels](https://www.tidymodels.org/start/)
+1. [Feature Engineering and Selection](https://bookdown.org/max/FES/) by Kuhn and Johnson
+1. [Learn more about tidymodels](https://www.tidymodels.org/learn/)
+1. [The caret package](https://topepo.github.io/caret/index.html)

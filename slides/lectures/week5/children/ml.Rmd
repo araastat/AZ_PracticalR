@@ -1,0 +1,92 @@
+
+---
+class: middle,center,inverse
+
+# A short intro to Machine Learning in R
+
+---
+
+## Packages
+
+```{r, echo=F}
+d <- tribble(
+  ~Title, ~Mode, ~"Function/Package",
+  "Linear regression", "regression", "lm,glmnet",
+  "Logistic regression","regression/classification", "glm,glmnet",
+  "K-nearest neighbors","regression/classification","kknn",
+  "Poisson regression", "regression","glm, glmnet,hurdle",
+  "Decision trees","regression/classification","rpart,C5.0,party,partykit",
+  "Random forests",'regression/classification',"randomForest,ranger,randomForestSRC",
+  "Boosted trees","regression","gbm,xgboost",
+  "Neural networks","regression","nnet,keras,torch",
+  "Survival models","regression","survival,flexsurv")
+
+knitr::kable(d) %>% 
+  kableExtra::kable_styling()
+```
+
+---
+
+## Some examples
+
+Most of the ML packages accept the same formula interface as `lm` and `glm`.
+
+```{r}
+library(randomForest)
+library(gbm)
+penguins_complete <- penguins %>% filter(complete.cases(.))
+
+# Most modeling functions do not allow missing values
+
+ml1 <- randomForest(body_mass_g ~ ., data = penguins_complete)
+ml2 <- gbm(body_mass_g ~ ., data=penguins_complete, distribution = 'gaussian')
+ml3 <- lm(body_mass_g ~ ., data=penguins_complete)
+
+mods <- list('random_forest'=ml1, 
+             'boosted_trees' = ml2, 
+             'linear_regression' = ml3)
+```
+
+Compute the predictions of body mass based on each of the models
+
+```{r}
+preds <- map(mods, predict, newdata=penguins_complete) %>% 
+  bind_cols()
+preds <- cbind(orig = penguins_complete$body_mass_g, preds)
+```
+
+
+---
+
+## Some examples
+
+```{r}
+pairs(preds)
+```
+
+---
+
+## Some examples
+
+```{r}
+GGally::ggpairs(preds)
+```
+
+---
+
+## Some examples
+
+We can also assess fit based on metrics. We'll use the root mean squared error (RMSE) here.
+
+```{r}
+library(yardstick)
+
+map(preds[,-1], ~yardstick::rmse_vec(preds[,1],.))
+```
+
+
+However, these are optimistic since we're estimating errors from the same data that was
+used to fit the model.
+
+We'll look at a unified way to approach this problem next.
+
