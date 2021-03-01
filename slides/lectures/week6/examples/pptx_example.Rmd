@@ -28,15 +28,16 @@ When you click the **Knit** button a document will be generated that includes bo
 ## Slide with R Output
 
 ```{r cars, echo = F, warning=F, message=F, ft.left=4.5}
-tbl_summary(iris) %>% as_flex_table() %>% theme_alafoli()
+tbl_summary(iris) %>%
+  as_flex_table() %>%
+  theme_alafoli()
 ```
 
 ## Slide with Plot
 
 ```{r, dpi=150}
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species))+
-  geom_point()+
-  theme_bw()+
-  labs(x = 'Sepal Length', y = 'Sepal Width')
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Sepal Length", y = "Sepal Width")
 ```
-
