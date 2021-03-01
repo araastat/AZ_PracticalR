@@ -1,0 +1,23 @@
+---
+output: 
+  word_document:
+    reference_docx: "Meeting Minutes.docx"
+---
+
+# Meeting Minutes
+# 1 March, 2021
+
+This meeting is to provide an example of using R Markdown with a Word template
+
+```{r, echo=FALSE, warning = F, message = F}
+library(tidyverse)
+library(flextable)
+flextable::flextable(head(iris,4)) %>% autofit()
+```
+
+```{r, echo=FALSE, dpi=150}
+ggplot(iris, aes(Sepal.Length, Sepal.Width))+
+  geom_point()+
+  labs(x = 'Sepal Length', y = 'Sepal Width')
+```
+

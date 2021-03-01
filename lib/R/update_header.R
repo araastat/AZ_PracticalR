@@ -40,7 +40,7 @@
 #' ```
 update_header <- function(header = NULL){
   txt <- paste(c('layout: true',
-                 '',
+                 ''#,
                  # '<div class="my-header">',
                  # '<span>Practical R</span>',
                  # '</div>'
