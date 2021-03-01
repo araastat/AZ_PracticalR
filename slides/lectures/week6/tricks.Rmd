@@ -83,6 +83,16 @@ fig
 
 ---
 
+## reticulate
+
+The **reticulate** package is a massive enhancement to the R ecosystem by enabling 
+Python code to be run from R. Reticulate embeds a Python session within your R session, enabling seamless, high-performance interoperability. If you are an R developer that uses Python for some of your work or a member of data science team that uses both languages, reticulate can dramatically streamline your workflow!
+
+This strategy has been used to run various Python-native packages from R, like *tensorflow* or *torch* for deep learning, or *altair* for data visualization
+
+
+---
+
 ## Interacting with Excel
 
 - **openxlsx** for writing, styling and editing worksheets
