@@ -1,7 +1,9 @@
 ---
-output: 
+output:
+  html_document:
+    theme: cerulean
   word_document:
-    reference_docx: "Meeting Minutes.docx"
+    reference_docx: Meeting Minutes.docx
 ---
 
 # Meeting Minutes
@@ -9,12 +11,17 @@ output:
 
 This meeting is to provide an example of using R Markdown with a Word template
 
+## Summary table
+
+
 ```{r, echo=FALSE, warning = F, message = F}
 library(tidyverse)
 library(flextable)
-flextable::flextable(head(iris,4)) %>% autofit()
+library(gtsummary)
+tbl_summary(iris) %>% as_flex_table() %>% autofit()
 ```
 
+## Plots
 ```{r, echo=FALSE, dpi=150}
 ggplot(iris, aes(Sepal.Length, Sepal.Width))+
   geom_point()+
