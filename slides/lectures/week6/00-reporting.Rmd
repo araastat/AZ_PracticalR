@@ -15,3 +15,8 @@ knitr::opts_chunk$set(cache=F)
 ```{r, child='rmarkdown.Rmd'}
 
 ```
+
+```{r, child='best_practices.Rmd'}
+
+```
+

@@ -1,0 +1,42 @@
+---
+title: "Testing PPTX"
+author: "Abhijit Dasgupta"
+date: "3/1/2021"
+output: 
+  powerpoint_presentation: 
+    reference_doc: "pptx_droplets.pptx"
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+pacman::p_load(tidyverse, flextable, gtsummary, palmerpenguins)
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = F, warning=F, message=F, ft.left=4.5}
+tbl_summary(iris) %>% as_flex_table() %>% theme_alafoli()
+```
+
+## Slide with Plot
+
+```{r, dpi=150}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species))+
+  geom_point()+
+  theme_bw()+
+  labs(x = 'Sepal Length', y = 'Sepal Width')
+```
+

@@ -1,5 +1,10 @@
 
 ---
+class: middle,center,inverse
+
+# Project organization
+
+---
 
 # Objectives 
 
@@ -102,125 +107,6 @@ class: inverse, middle, center
 ---
 class: inverse, middle, center
 
-# RStudio Projects
-
-.footnote[.right[[description](#proj1)]]
-
----
-
-## RStudio Projects
-
-```{r 10-BestPractice-1,  echo=F, message=F, warning=F}
-knitr::include_graphics('../img/project1.png')
-# library(magick)
-# plt <- image_read(path(path_rel(imgdir),'project1.png'))
-# image_scale(plt, "1600")
-```
-
----
-
-## RStudio Projects
-```{r 10-BestPractice-2, echo=F, message=F, warning=F}
-knitr::include_graphics('../img/project2.png')
-# plt <- image_read('../img/project2.png')
-# image_scale(plt, "1600")
-```
-
----
-
-## RStudio Projects
-```{r 10-BestPractice-3,  echo=F, message=F, warning=F}
-knitr::include_graphics('../img/project3.png')
-# plt <- image_read('../img/project3.png')
-# image_scale(plt, "1600")
-```
-
----
-
-## RStudio Projects
-```{r 10-BestPractice-4,  echo=F, message=F, warning=F}
-knitr::include_graphics('../img/project4.png')
-# plt <- image_read('../img/project4.png')
-# image_scale(plt, "1600")
-```
-
----
-
-## RStudio Projects
-```{r 10-BestPractice-5,  echo=F, message=F, warning=F}
-knitr::include_graphics('../img/project5.png')
-# plt <- image_read('../img/project5.png')
-# image_scale(plt, "1600")
-```
-
----
-
-## RStudio Projects
-```{r 10-BestPractice-6,  echo=F, message=F, warning=F}
-knitr::include_graphics('../img/project6.png')
-# plt <- image_read('../img/project6.png')
-# image_scale(plt, "1600")
-```
-
----
-
-## RStudio Projects
-```{r 10-BestPractice-7,  echo=F, message=F, warning=F}
-knitr::include_graphics('../img/project7.png')
-# plt <- image_read('../img/project7.png')
-# image_scale(plt, "1600")
-```
-
----
-name: proj1
-
-## RStudio Projects
-
-When you create a Project, the following obvious things happen:
-
-1. RStudio puts you into the right directory/folder
-2. Creates a .Rproj file containing project options
-    + You can double-click on the .Rproj file to open the project in RStudio
-3. Displays the project name in the project toolbar (right top of the window)
-
----
-
-## RStudio Projects
-
-The following not-so-obvious things happen:
-
-1. A new R session (process) is started
-2. The .Rprofile file in the project’s main directory (if any) is sourced by R
-3. The .RData file in the project’s main directory is loaded (this can be controlled by an option).
-4. The .Rhistory file in the project’s main directory is loaded into the RStudio History pane (and used for Console Up/Down arrow command history).
-5. The current working directory is set to the project directory.
-6. Previously edited source documents are restored into editor tabs, and
-7. Other RStudio settings (e.g. active tabs, splitter positions, etc.) are restored to where they were the last time the project was closed.
-
----
-
-## RStudio Projects
-
-I use [Projects]() so that:
-
-1. I'm always in the right directory for the project
-2. I don't contaminate one project's analysis with another (different sandboxes)
-3. I can access different projects quickly
-4. I can version control them (Git) easily (topic for beyond this class)
-5. I can customize options per project
-
-.footnote[A great reference for git from a R user's perspective is Jenny Bryan's excellent [happygitwithr.com](https://happygitwithr.com/)]
----
-
-## RStudio Projects
-```{r 10-BestPractice-8, echo=F}
-knitr::include_graphics('../img/project8.png')
-# image_scale(plt, "1600")
-```
-
----
-class: inverse, middle, center
-
 # Project organization
 
 ---
@@ -266,6 +152,8 @@ knitr::include_graphics('../img/best_practices_structure.png')
     + 03-EDA.R
     + 04-Modeling.R
 
+A nice introduction is Jenny Bryan's [presentation](http://www2.stat.duke.edu/~rcs46/lectures_2015/01-markdown-git/slides/naming-slides/naming-slides.pdf)
+
 ---
 
 ## Documentation
@@ -279,7 +167,9 @@ knitr::include_graphics('../img/best_practices_structure.png')
         + What new scripts I've written
         + What new functions I've written
         + Notes from discussions with colleagues on decisions regarding data, analyses, final products
-  
+
+
+
 ---
 
 ## Documentation
@@ -436,4 +326,17 @@ knitr::include_graphics('../img/tidypipeline.jpg')
 + This provides final check that right data are used, and can be updated easily during revision cycle
 
 + It's a long road to this point, so make sure things are good. 
+
+---
+
+## Research compendia
+
+A research compendium accompanies, enhances, or is a scientific publication providing data, code, and documentation for reproducing a scientific workflow (https://research-compendium.science)
+
+Some resources for creating research compendia using R:
+
+- [Creating a research compendium w/ rrtools](https://annakrystalli.me/rrresearch/10_compendium.html#%F0%9F%9A%A6_create_compendium)
+- [rrrpkg: A R package to facilitate reproducible research](https://github.com/ropensci/rrrpkg)
+- [Packaging data analytical work reproducibly using R (and friends)](https://peerj.com/preprints/3192/)
+
 

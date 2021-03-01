@@ -92,4 +92,26 @@ doc1 <- az_slide_create(title = 'Examples of plots',
   slide_add_section('Survival curves') %>%
   slide_add_gg(sp1)
 
-print(doc1, target = 'pptx_officer_example.pptx')
+print(doc1, target = 'pptx_officer_example_az.pptx')
+
+pltt <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species))+
+  geom_point()+
+  theme_bw()+
+  labs(x = 'Sepal Length', y = 'Sepal Width')
+
+pacman::p_load(gtsummary, flextable)
+doc2 <- read_pptx('pptx_droplets.pptx') %>%
+  remove_slide() %>%
+  add_slide(layout='Title Slide', master='Droplet') %>%
+  ph_with('A PPTX example', location = ph_location_type(type='ctrTitle')) %>%
+  ph_with('Abhijit Dasgupta', location = ph_location_type(type='subTitle')) %>%
+  add_slide(layout = 'Title and Content', master='Droplet') %>%
+  ph_with('A summary table', location = ph_location(type='ctrTitle')) %>%
+  ph_with(tbl_summary(iris) %>% as_flex_table() %>% autofit() %>% theme_alafoli(),
+          location = ph_location_right()) %>%
+  add_slide(layout = 'Title and Content', master='Droplet') %>%
+  ph_with('A plot', location = ph_location_type(type='title')) %>%
+  ph_with(pltt, location = ph_location_type(type='body') )
+
+print(doc2, 'pptx_example_officer.pptx')
+
