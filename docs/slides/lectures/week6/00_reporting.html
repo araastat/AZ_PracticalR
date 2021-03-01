@@ -9,6 +9,14 @@
     <link href="00_reporting_files/panelset-0.2.3.9000/panelset.css" rel="stylesheet" />
     <script src="00_reporting_files/panelset-0.2.3.9000/panelset.js"></script>
     <link href="00_reporting_files/xaringanExtra-extra-styles-0.2.3.9000/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <script src="00_reporting_files/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+    <script src="00_reporting_files/plotly-binding-4.9.3/plotly.js"></script>
+    <script src="00_reporting_files/typedarray-0.1/typedarray.min.js"></script>
+    <script src="00_reporting_files/jquery-3.5.1/jquery.min.js"></script>
+    <link href="00_reporting_files/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+    <script src="00_reporting_files/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+    <link href="00_reporting_files/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet" />
+    <script src="00_reporting_files/plotly-main-1.57.1/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="../css/xaringan-themer.css" type="text/css" />
     <link rel="stylesheet" href="../css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../css/sfah.css" type="text/css" />
@@ -1061,6 +1069,107 @@ Some resources for creating research compendia using R:
 - [Packaging data analytical work reproducibly using R (and friends)](https://peerj.com/preprints/3192/)
 
 
+
+
+
+---
+class: middle,center,inverse
+
+# Some useful packages
+
+---
+## reprex
+
+The [**reprex**](https://reprex.tidyverse.org/) package helps produce *reproducible examples*
+It is meant to provide runnable code when asking questions on StackOverflow, Github Issues, or even Slack or e-mail. 
+
+When you ask a question about a problem you're having in R, it's best to provide a 
+[minimal reproducible](https://yihui.org/en/2017/09/the-minimal-reprex-paradox/) [example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). This allows you to actually try to identify the problem, and allows a helper to 
+reproduce the problem with minimal fuss. 
+
+.pull-left[
+![](img/reprex1.png)
+]
+.pull-right[
+- A webinar explaining the **reprex** package ([link](https://rstudio.com/resources/webinars/help-me-help-you-creating-reproducible-examples/))
+- [Reprex do's and don'ts](https://reprex.tidyverse.org/articles/reprex-dos-and-donts.html)
+- [Magic reprex](https://reprex.tidyverse.org/articles/articles/magic-reprex.html)
+
+![label](https://raw.githubusercontent.com/tidyverse/reprex/master/img/reprex-si.gif)
+]
+
+---
+
+## datapasta
+
+**datapasta** is a really useful package developed by Miles McBain to allow
+copy-paste of vectors and tables into R. It provides an RStudio add-in that makes
+this process simple
+
+.left-column70[
+![pow!](https://raw.githubusercontent.com/milesmcbain/datapasta/master/inst/media/tribble_paste.gif)
+]
+.right-column70[
+![](img/datapasta.png)
+]
+
+---
+
+## styler
+
+The **styler** package helps to format your R code to meet the tidyverse style guide. It works on both .R and .Rmd files. 
+
+The **styler** package also provides a RStudio add-in that styles a particular file, or all 
+files in a directory
+
+.left-column70[
+![](img/tidystyle.png)
+]
+.right-column70[
+![](img/styler.png)
+]
+
+---
+
+## plotly
+
+[**plotly** ](https://plotly.com/r/) is a Javascript package for producing interactive
+graphs that has a very nice R interface. **plotly** is also available for Python. 
+
+.pull-left[
+
+```r
+library(plotly)
+
+fig &lt;- plot_ly(data = iris, 
+               x = ~Sepal.Length, 
+               y = ~Petal.Length, 
+               color = ~Species)
+
+fig
+```
+]
+.pull-right[
+<div id="htmlwidget-ec8701f4d0ee88a0f174" style="width:504px;height:504px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ec8701f4d0ee88a0f174">{"x":{"visdat":{"dd447305029c":["function () ","plotlyVisDat"]},"cur_data":"dd447305029c","attrs":{"dd447305029c":{"x":{},"y":{},"color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Sepal.Length"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Petal.Length"},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9,5.4,4.8,4.8,4.3,5.8,5.7,5.4,5.1,5.7,5.1,5.4,5.1,4.6,5.1,4.8,5,5,5.2,5.2,4.7,4.8,5.4,5.2,5.5,4.9,5,5.5,4.9,4.4,5.1,5,4.5,4.4,5,5.1,4.8,5.1,4.6,5.3,5],"y":[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5,1.5,1.6,1.4,1.1,1.2,1.5,1.3,1.4,1.7,1.5,1.7,1.5,1,1.7,1.9,1.6,1.6,1.5,1.4,1.6,1.6,1.5,1.5,1.4,1.5,1.2,1.3,1.4,1.3,1.5,1.3,1.3,1.3,1.6,1.9,1.4,1.6,1.4,1.5,1.4],"type":"scatter","mode":"markers","name":"setosa","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[7,6.4,6.9,5.5,6.5,5.7,6.3,4.9,6.6,5.2,5,5.9,6,6.1,5.6,6.7,5.6,5.8,6.2,5.6,5.9,6.1,6.3,6.1,6.4,6.6,6.8,6.7,6,5.7,5.5,5.5,5.8,6,5.4,6,6.7,6.3,5.6,5.5,5.5,6.1,5.8,5,5.6,5.7,5.7,6.2,5.1,5.7],"y":[4.7,4.5,4.9,4,4.6,4.5,4.7,3.3,4.6,3.9,3.5,4.2,4,4.7,3.6,4.4,4.5,4.1,4.5,3.9,4.8,4,4.9,4.7,4.3,4.4,4.8,5,4.5,3.5,3.8,3.7,3.9,5.1,4.5,4.5,4.7,4.4,4.1,4,4.4,4.6,4,3.3,4.2,4.2,4.2,4.3,3,4.1],"type":"scatter","mode":"markers","name":"versicolor","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"line":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[6.3,5.8,7.1,6.3,6.5,7.6,4.9,7.3,6.7,7.2,6.5,6.4,6.8,5.7,5.8,6.4,6.5,7.7,7.7,6,6.9,5.6,7.7,6.3,6.7,7.2,6.2,6.1,6.4,7.2,7.4,7.9,6.4,6.3,6.1,7.7,6.3,6.4,6,6.9,6.7,6.9,5.8,6.8,6.7,6.7,6.3,6.5,6.2,5.9],"y":[6,5.1,5.9,5.6,5.8,6.6,4.5,6.3,5.8,6.1,5.1,5.3,5.5,5,5.1,5.3,5.5,6.7,6.9,5,5.7,4.9,6.7,4.9,5.7,6,4.8,4.9,5.6,5.8,6.1,6.4,5.6,5.1,5.6,6.1,5.6,5.5,4.8,5.4,5.6,5.1,5.1,5.9,5.7,5.2,5,5.2,5.4,5.1],"type":"scatter","mode":"markers","name":"virginica","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+]
+
+---
+
+## reticulate
+
+The **reticulate** package is a massive enhancement to the R ecosystem by enabling 
+Python code to be run from R. Reticulate embeds a Python session within your R session, enabling seamless, high-performance interoperability. If you are an R developer that uses Python for some of your work or a member of data science team that uses both languages, reticulate can dramatically streamline your workflow!
+
+This strategy has been used to run various Python-native packages from R, like *tensorflow* or *torch* for deep learning, or *altair* for data visualization
+
+
+---
+
+## Interacting with Excel
+
+- **openxlsx** for writing, styling and editing worksheets
+- **tidyxl** for reading messy, non-tabular data from Excel into a tidy format (see an example [here](https://webbedfeet.netlify.app/post/tidying-messy-excel-data-tidyxl/))
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
